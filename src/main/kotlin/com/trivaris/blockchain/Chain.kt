@@ -1,19 +1,18 @@
 package com.trivaris.blockchain
 
-import com.trivaris.networking.applySha256
+import com.trivaris.applySha256
 import java.io.File
 
 object Chain {
 
-    val it = arrayListOf(Block(data = "data", hashedIP = "0"))
-    val ownIP = File("resources/ip.txt").readLines()[0].applySha256()
+    val it = mutableListOf<Block>()
+    private val uuidFile = File("resources/uuid.txt")
 
-    fun getVoters(): ArrayList<String> =
-        it.map { it.hashedIP } as ArrayList<String>
+    fun userIP() = uuidFile.readLines()[0].toInt()
+    fun userUUID() = userIP().toString().applySha256()
 
-    fun add(block: Block) =
-        Validity.checkAsNewest(block).takeIf { it }?.let { this.it.add(block) }
+    fun peerAmount() = uuidFile.readLines()[1].toInt()
+    fun voterUUIDs() =  it.map { it.uuid } as ArrayList<String>
+    fun userVoted() = Validity.alreadyVoted(userUUID())
 
-    fun selfVoted() =
-        getVoters().contains(ownIP)
 }

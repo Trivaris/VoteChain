@@ -1,22 +1,23 @@
 package com.trivaris.blockchain
 
-import com.trivaris.networking.applySha256
+import com.trivaris.applySha256
 import kotlinx.serialization.Serializable
 import java.util.Date
+import com.trivaris.blockchain.Chain.it
 
 @Serializable
 data class Block(
     var hash: String = "",
 
     val data: String,
-    val previousHash: String = Chain.it.last().hash,
+    val previousHash: String = if (it.isEmpty()) "0" else it.last().hash,
     val timestamp: Long = Date().time,
-    val hashedIP: String
+    val uuid: String
 ) {
     init { hash = calculateHash() }
 
     fun calculateHash(): String {
-        val toEncode = data + previousHash + timestamp.toString() + hashedIP
+        val toEncode = data + previousHash + timestamp.toString() + uuid
         return toEncode.applySha256()
     }
 }

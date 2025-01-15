@@ -1,1 +1,1 @@
-rootProject.name = "VoteChain.Re"
+rootProject.name = "VoteChain.Peer"

@@ -1,25 +1,44 @@
 package com.trivaris.blockchain
 
 import com.trivaris.blockchain.Chain.it as chain
+import com.trivaris.networking.Dispatcher.post
+import com.trivaris.badRequestThreshold
+import io.ktor.http.HttpStatusCode
 
 object Validity {
 
-    fun checkAsNewest(block: Block): Boolean =
-        withLatest(block) && !alreadyVoted(block)
+    suspend fun checkNetwork(peers: IntRange, block: Block, add: Boolean, origin: Int): Boolean {
+        var badRequests = 0
+        for (peer in peers) {
+            if (peer == Chain.userIP() || peer == origin) continue
+            else if (post(block, peer, if (add) "add" else "probe").status == HttpStatusCode.BadRequest) badRequests++
+        }
+        return badRequests < badRequestThreshold
+    }
 
-    private fun hashes(curr: Block, prev: Block): Boolean =
-        currentHashes(curr) && previousHashes(curr, prev)
+    fun checkLocal(block: Block): Boolean =
+        Hashes.withLast(block) && !alreadyVoted(block) && correctTime(block)
 
-    private fun withLatest(block: Block): Boolean =
-        hashes(block, chain.last())
+    fun alreadyVoted(uuid: String): Boolean =
+        Chain.voterUUIDs().contains(uuid)
+    fun alreadyVoted(block: Block): Boolean =
+        alreadyVoted(block.uuid)
 
-    private fun currentHashes(block: Block): Boolean =
-        block.hash == block.calculateHash()
+    private fun correctTime(block: Block): Boolean =
+        block.timestamp > (chain.lastOrNull()?.timestamp ?: 0)
 
-    private fun previousHashes(curr: Block, prev: Block): Boolean =
-        prev.hash == curr.previousHash
+    private object Hashes {
+        fun current(block: Block): Boolean =
+            block.hash == block.calculateHash()
 
-    private fun alreadyVoted(block: Block): Boolean =
-        Chain.getVoters().contains(block.hashedIP)
+        fun previous(curr: Block, prev: Block?): Boolean =
+            if (prev == null) true else prev.hash == curr.previousHash
+
+        fun check(curr: Block, prev: Block?): Boolean =
+            current(curr) && previous(curr, prev)
+
+        fun withLast(block: Block): Boolean =
+            check(block, chain.lastOrNull())
+    }
 
 }

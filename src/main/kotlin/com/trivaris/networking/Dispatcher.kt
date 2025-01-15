@@ -15,12 +15,14 @@ object Dispatcher {
         }
     }
 
-    suspend fun post(body: Block, url: String, endpoint: String): HttpResponse =
-        client.post("http://$url:8080/$endpoint") {
+    suspend fun post(vote: Block, peer: Any, endpoint: String): HttpResponse =
+        client.post("http://10.0.0.$peer:8080/$endpoint") {
             contentType(ContentType.Application.Json)
-            setBody(body) }
+            setBody(vote)
+        }
 
-    suspend fun get(url: String, endpoint: String): HttpResponse =
-        client.get("http://$url:8080/$endpoint") {
-            contentType(ContentType.Application.Json) }
+    suspend fun get(peer: String, endpoint: String): HttpResponse =
+        client.get("http://10.0.0.$peer:8080/$endpoint") {
+        }
+
 }
