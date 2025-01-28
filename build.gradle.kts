@@ -2,6 +2,7 @@ val kotlinVersion: String by project
 val logbackVersion: String by project
 val ktorVersion: String by project
 val yass2Version: String by project
+val jsonVersion: String by project
 
 plugins {
     kotlin("jvm") version "2.1.0"
@@ -36,6 +37,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:${ktorVersion}")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     testImplementation("io.ktor:ktor-server-test-host-jvm:${ktorVersion}")
+    implementation("org.json:json:${jsonVersion}")
 
     implementation("ch.softappeal.yass2:yass2-ktor:${yass2Version}")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")

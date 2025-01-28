@@ -1,8 +1,11 @@
 package com.trivaris.networking
 
 import com.trivaris.blockchain.Block
-import com.trivaris.blockchain.Chain
+import com.trivaris.blockchain.Peer
+import com.trivaris.blockchain.Pair
 import io.ktor.server.application.*
+import io.ktor.server.request.receive
+import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.*
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
@@ -16,24 +19,27 @@ fun Application.configureRouting() {
         get("/")                { return@get Routing.root(call)}
         get("/debug")           { return@get Routing.debug() }
 
-        post("/submit")         { return@post Send.submit(call) }
-        post("/add")            { return@post Receive.add(call) }
-        post("/probe")          { return@post Receive.probe(call) }
+        post("/submit")         { return@post RequestHandler.add(call, Pair(Peer.key, call.receiveParameters()["candidates"] as String)) }
+        post("/add")            { return@post RequestHandler.add(call, call.receive<Pair>()) }
 
-        get("/show")            { call.respondText { Chain.it.toString() } }
-        get("/evaluate")        { return@get Send.evaluate(call) }
+        post("/blockmined")     { return@post RequestHandler.blockMined(call) }
+
+        get("/show")            { call.respondText { Peer.chain.toString() } }
+        get("/evaluate")        { return@get RequestHandler.evaluate(call) }
     }
 
 }
 
 object Routing{
     suspend fun root(call: ApplicationCall) {
-        if (!Chain.userVoted()) call.respondFile(File("resources/static/index.html"))
+        if (Peer.currentVotes.getOrDefault(Peer.key, null) == null)
+            call.respondFile(File("resources/static/index.html"))
+
         else call.respondAlreadyVoted()
     }
 
     suspend fun debug() {
-        val newBlock = Block(data = "DebugBlock", uuid = "127.0.0.1")
+        val newBlock = Block(votes = hashMapOf("Debug" to "None"), uuid = "127.0.0.1")
         Dispatcher.post(newBlock, localHosts[0], "add")
     }
 }

@@ -1,5 +1,6 @@
 package com.trivaris
 
+import com.trivaris.blockchain.Peer
 import com.trivaris.networking.configureRouting
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
@@ -12,8 +13,10 @@ import io.ktor.server.response.respondText
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import kotlinx.serialization.json.Json
 import java.security.MessageDigest
+import kotlin.io.path.Path
 
 fun main() {
+    Peer.initialize()
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
@@ -24,8 +27,6 @@ fun Application.module() {
     configureStatusPages()
     configureRouting()
 }
-
-const val badRequestThreshold = 1
 
 fun String.applySha256(): String {
     val digest = MessageDigest.getInstance("SHA-256")
