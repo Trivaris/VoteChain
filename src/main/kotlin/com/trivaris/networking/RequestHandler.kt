@@ -1,7 +1,8 @@
 package com.trivaris.networking
 
+import com.trivaris.applySha256
 import com.trivaris.blockchain.Block
-import com.trivaris.blockchain.Pair
+import com.trivaris.blockchain.Vote
 import com.trivaris.blockchain.Peer
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
@@ -12,26 +13,33 @@ import io.ktor.server.response.respondText
 
 object RequestHandler {
 
-    suspend fun add(call: ApplicationCall, vote: Pair) {
-        if (call.ip !in Peer.children && call.ip != Peer.parent && call.ip != Peer.ip) return call.respondAccessDenied()
+    suspend fun add(call: ApplicationCall, vote: Vote) {
+        if (
+            call.ip !in Peer.children &&
+            call.ip != Peer.parent &&
+            call.ip != Peer.ip &&
+            call.ip !in localHosts
+            )
+
+            return call.respondAccessDenied()
 
         println("[OUT] User eligble")
 
-        val recipients = Peer.children
-        recipients.add(Peer.parent)
-        recipients.remove(call.ip)
+        val recipients = Peer.getRecipients(call)
 
-        recipients.removeAll { it == "" }
         println("[OUT] Recipients: $recipients")
 
-        Peer.currentVotes[vote.first] = vote.second
+        if (vote.key in Peer.allVotes()) return call.respondBad("That key already voted!")
+
+        Peer.currentVotes[vote.key] = vote.vote
+
         Dispatcher.post(vote, recipients, "add")
 
         return call.respond(HttpStatusCode.OK)
     }
 
     suspend fun blockMined(call: ApplicationCall) {
-        if (call.ip !in Peer.children || call.ip != Peer.parent) return call.respondAccessDenied()
+        if (call.ip !in Peer.children && call.ip != Peer.parent) return call.respondAccessDenied()
 
         val block = call.receive<Block>()
         val validity = block.validity()
@@ -45,18 +53,15 @@ object RequestHandler {
         Dispatcher.post(block, recipients, "blockmined")
     }
 
+
     suspend fun evaluate(call: ApplicationCall) {
-        val votes = mutableMapOf<String, Int>()
-        for (block in Peer.chain) {
-            val blockVotes = block.votes
-            for (candidate in blockVotes.values)
-                votes[candidate] = votes.getOrDefault(candidate, 0) + 1
-        }
+        val votes = Peer.allVotes().values.groupingBy { it }.eachCount()
+        val filteredVotes = Peer.allVotes().filterKeys { it.applySha256() in Peer.allowedKeys }.values.groupingBy { it }.eachCount()
 
-        for (candidate in Peer.currentVotes.values)
-            votes[candidate] = votes.getOrDefault(candidate, 0) + 1
-
-        return call.respondText(votes.toString())
+        return call.respondText("""
+            Votes: $votes
+            Filtered: $filteredVotes
+        """.trimIndent())
     }
 
 }

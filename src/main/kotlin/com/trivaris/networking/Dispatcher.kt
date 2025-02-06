@@ -20,6 +20,12 @@ object Dispatcher {
             setBody(body)
         }
 
+    suspend fun get(peer: String, endpoint: String): HttpResponse =
+        client.get("http://$peer:8080/$endpoint") {
+            contentType(ContentType.Application.Json)
+        }
+
+
     suspend fun post(body: Any, peers: List<String>, endpoint: String): Array<HttpResponse> {
         val responses = arrayOf<HttpResponse>()
         for (peer in peers) {
