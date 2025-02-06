@@ -13,7 +13,7 @@ import io.ktor.server.response.respondText
 
 object RequestHandler {
 
-    suspend fun add(call: ApplicationCall, vote: Vote) {
+    suspend fun add(call: ApplicationCall, vote: Vote, notify: Boolean = true) {
         if (
             call.ip !in Peer.children &&
             call.ip != Peer.parent &&
@@ -33,7 +33,7 @@ object RequestHandler {
 
         Peer.currentVotes[vote.key] = vote.vote
 
-        Dispatcher.post(vote, recipients, "add")
+        if (notify) Dispatcher.post(vote, recipients, "add")
 
         return call.respond(HttpStatusCode.OK)
     }

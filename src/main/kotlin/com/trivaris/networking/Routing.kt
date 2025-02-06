@@ -17,14 +17,15 @@ val localHosts = mutableListOf<String>("127.0.0.1", "::1")
 fun Application.configureRouting() {
     routing {
         // Input
-        get("/")                { return@get Routing.root(call, "index")}
-        get("/custom")          { return@get Routing.root(call, "customSubmit")}
+        get("/")                { return@get Routing.root(call)}
+        get("/custom")          { call.respondFile(File("resources/static/customSubmit.html")) }
         get("/debug")           { return@get Routing.debug() }
 
         // Syncing
         post("/submit")         { return@post RequestHandler.add(call, Vote(Peer.key, call.receiveParameters()["candidates"] as String)) }
         post("/add")            { return@post RequestHandler.add(call, call.receive<Vote>()) }
-        post("/customSubmit")   { val params = call.receiveParameters(); return@post RequestHandler.add(call, Vote(params["key"] as String, params["candidates"] as String)) }
+        post("/customSubmit")   { val params = call.receiveParameters(); return@post RequestHandler.add(call, Vote(params["key"] as String, params["candidates"] as String), params["notify"] != null) }
+
         post("/blockmined")     { return@post RequestHandler.blockMined(call) }
 
         // Show data
@@ -49,9 +50,9 @@ fun Application.configureRouting() {
 }
 
 object Routing{
-    suspend fun root(call: ApplicationCall, html: String) {
-        if (Peer.currentVotes.getOrDefault(Peer.key, null) == null || html == "customSubmit")
-            call.respondFile(File("resources/static/$html.html"))
+    suspend fun root(call: ApplicationCall) {
+        if (Peer.currentVotes.getOrDefault(Peer.key, null) == null)
+            call.respondFile(File("resources/static/index.html"))
 
         else call.respondAlreadyVoted()
     }

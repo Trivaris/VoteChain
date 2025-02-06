@@ -23,9 +23,12 @@ data class Block(
     }
 
     fun mine() {
-        while (hash.substring(0..DIFFICULTY) != "0".repeat(DIFFICULTY)) {
+        hash = calculateHash()
+        while (true) {
+            if (hash.substring(0..<DIFFICULTY) == "0".repeat(DIFFICULTY)) break
             nonce++
             hash = calculateHash()
+            println(nonce)
         }
         println("Block mined!: $hash")
     }
