@@ -1,1 +1,2 @@
-rootProject.name = "VoteChain.Peer"
+rootProject.name = "VoteChain"
+include("Host", "Server", "Peer")

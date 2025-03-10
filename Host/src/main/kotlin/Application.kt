@@ -1,37 +1,25 @@
-package com.trivaris
+package com.trivaris.votechain.server
 
-import com.trivaris.blockchain.Peer
-import com.trivaris.networking.configureRouting
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.netty.EngineMain
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.defaultheaders.DefaultHeaders
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respondText
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import kotlinx.serialization.json.Json
-import java.security.MessageDigest
-import kotlin.io.path.Path
 
-fun main() {
-    Peer.initialize()
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
+fun main(args: Array<String>) {
+    EngineMain.main(args)
 }
 
-fun Application.module() {
+fun Application.moduleHost() {
     configureHTTP()
     configureSerialization()
     configureStatusPages()
     configureRouting()
-}
-
-fun String.applySha256(): String {
-    val digest = MessageDigest.getInstance("SHA-256")
-    val hash = digest.digest(this.toByteArray(Charsets.UTF_8))
-    return hash.joinToString("") { String.format("%02x", it) }
 }
 
 fun Application.configureHTTP() {

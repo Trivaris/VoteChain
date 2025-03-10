@@ -1,20 +1,21 @@
-package com.trivaris.blockchain
+package com.trivaris.votechain.blockchain
 
-import com.trivaris.applySha256
+import com.trivaris.votechain.DIFFICULTY
+import com.trivaris.votechain.Vote
+import com.trivaris.votechain.applySha256
 import kotlinx.serialization.Serializable
 import java.util.Date
-import com.trivaris.blockchain.Peer.chain
-const val DIFFICULTY = 5
 
 @Serializable
-data class Block(
-    var hash: String = "",
+open class Block(
+    private var hash: String = "",
     var nonce: Int = 0,
 
-    val votes: HashMap<String, String> = Peer.currentVotes,
-    val previousHash: String = if (chain.isEmpty()) "0" else chain.last().hash,
+    val votes: MutableList<Vote> = mutableListOf(),
+    val previousHash: String,
     val timestamp: Long = Date().time
 ) {
+
     init { hash = calculateHash() }
 
     fun calculateHash(): String {
@@ -36,15 +37,6 @@ data class Block(
     fun validity(): String? {
         if (hash != calculateHash())
             return "Hashes dont match!"
-
-        if (previousHash != chain.last().hash)
-            return "Previous hashes dont match!"
-
-        if (votes != Peer.currentVotes)
-            return "Votes dont match!"
-
-        if (timestamp < chain.last().timestamp)
-            return "Block was created too late!"
 
         if (hash.substring(0..DIFFICULTY) != "0".repeat(DIFFICULTY))
             return "Block is not mined!"
