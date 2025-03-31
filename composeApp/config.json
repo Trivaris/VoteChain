@@ -3,7 +3,6 @@
     "printHashCalc": true,
     "keypairAmount": 10,
     "serverIP": "192.168.178.70",
-    "debugMode": false,
-    "isAndroid": true,
+    "debugMode": true,
     "isServer": true
 }

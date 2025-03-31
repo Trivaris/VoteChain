@@ -12,11 +12,11 @@ import javax.imageio.ImageIO
 import kotlin.collections.Map
 
 object Server {
-    val keypairs: List<KeyPair> =
-        if (config!!.data.debugMode) debugKeypairs
-        else List(config!!.data.keypairAmount) { Cryptography.generateKeyPair() }
+    private val keypairs: List<KeyPair> =
+        if (Config.data.debugMode) debugKeypairs
+        else List(Config.data.keypairAmount) { Cryptography.generateKeyPair() }
 
-    val decryptionMap: Map<String, String> = keypairs.associate {
+    private val decryptionMap: Map<String, String> = keypairs.associate {
         val publicKeyString = it.public.asString()
         val publicKeyHash = publicKeyString.applySha256()
         publicKeyHash to publicKeyString
@@ -27,20 +27,23 @@ object Server {
         MessageManager.outgoing(response, originator)
     }
 
-    fun saveKeys() {
+    private fun saveKeys() {
+        File("keys/").apply { mkdir() }
         keypairs.forEachIndexed { index, keypair ->
             val serialized = SerializableKeyPair(keypair)
             val json = Json.encodeToString(serialized)
             val qr = json.toQRCode()
-            val file = File("keys/keypair-${index}.png")
-            file.createNewFile()
+            val file = File("keys/keypair-${index}.png").apply { createNewFile() }
+
             ImageIO.write(qr, "PNG", file)
         }
     }
 
     init {
-        if (config!!.data.isServer)
+        if (Config.data.isServer) {
+            println("Saving keys...")
             saveKeys()
+        }
     }
 }
 

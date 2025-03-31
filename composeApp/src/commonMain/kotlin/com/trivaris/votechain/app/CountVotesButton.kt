@@ -2,6 +2,7 @@ package com.trivaris.votechain.app
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -39,7 +40,11 @@ fun CandidateProgressBar(candidate: Candidate, percentage: Float) {
                 progress = percentage,
                 color = Color.Green,
             )
-            Text(text = "${percentage*100}%", color = Color.Gray)
+            Text(
+                text = "${"%.2f".format(percentage * 100)}%",
+                color = Color.White,
+                modifier = Modifier.offset(y = (-4).dp, x = 8.dp)
+            )
         }
     }
 }

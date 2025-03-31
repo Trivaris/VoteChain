@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trivaris.votechain.blockchain.Block
 import com.trivaris.votechain.blockchain.BlockStorage
-import com.trivaris.votechain.config
+import com.trivaris.votechain.Config
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -51,8 +51,8 @@ fun Block(block: Block) {
     ) {
         Column {
             Row(modifier = Modifier.fillMaxWidth()) {
-                val hashPrefix = block.hash.take(config!!.data.difficulty)
-                val remainingHash = block.hash.drop(config!!.data.difficulty).take(10) + "..."
+                val hashPrefix = block.hash.take(Config.data.difficulty)
+                val remainingHash = block.hash.drop(Config.data.difficulty).take(10) + "..."
 
                 Text(
                     text = hashPrefix,

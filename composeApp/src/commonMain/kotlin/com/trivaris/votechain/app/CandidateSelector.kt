@@ -39,24 +39,24 @@ fun CandidateSelector(onCandidateSelected: (Candidate) -> Unit) {
             label = { Text("Select Candidate") },
             enabled = false,
             trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expanded
-                )
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
+                disabledTextColor = Color.White,
+                disabledBorderColor = Color.Green,
+                disabledLabelColor = Color.Green,
                 focusedBorderColor = Color.Green,
                 unfocusedBorderColor = Color.White,
                 cursorColor = Color.Green,
                 unfocusedLabelColor = Color.Green,
-                focusedLabelColor = Color.White,
-                textColor = Color.White
+                focusedLabelColor = Color.White
             )
         )
 
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.background(Color.Gray)
+            modifier = Modifier.background(Color.White)
         ) {
             options.forEach { candidate ->
                 DropdownMenuItem(

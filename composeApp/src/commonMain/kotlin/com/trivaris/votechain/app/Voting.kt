@@ -12,30 +12,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.trivaris.votechain.Config
 import com.trivaris.votechain.networking.MessageManager
-import com.trivaris.votechain.config
 import com.trivaris.votechain.networking.Message
 import com.trivaris.votechain.voting.VotingManager
 import java.net.InetAddress
 
 @Composable
-fun Voting() {
+fun Voting(onVoteNull: () -> Unit) {
     Row(
         modifier = Modifier.padding(8.dp)
     ) {
         CandidateSelector(
             onCandidateSelected = { candidate ->
-                VotingManager.currentCandidate = candidate
+                VotingManager.setCurrentCandidate(candidate)
             }
         )
         Spacer(modifier = Modifier.width(16.dp))
 
         Button(
             onClick = {
-                println("Candidate: ${VotingManager.currentCandidate}")
-                val vote = VotingManager.makeVote() ?: return@Button
+                val vote = VotingManager.makeVote()
+                if (vote == null) {
+                    onVoteNull()
+                    return@Button
+                }
                 val voteMessage = Message(vote)
-                MessageManager.outgoing(voteMessage, InetAddress.getByName(config!!.data.serverIP))
+                MessageManager.outgoing(voteMessage, InetAddress.getByName(Config.data.serverIP))
             },
             modifier = Modifier.width(100.dp).offset(y = 15.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),

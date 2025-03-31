@@ -1,10 +1,10 @@
 package com.trivaris.votechain.networking
 
+import com.trivaris.votechain.Config
 import com.trivaris.votechain.Server
 import com.trivaris.votechain.blockchain.Block
 import com.trivaris.votechain.blockchain.BlockManager
 import com.trivaris.votechain.voting.SerializableVote
-import com.trivaris.votechain.config
 import com.trivaris.votechain.voting.VotingManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -81,9 +81,12 @@ object MessageManager {
                     }
 
                     else -> {
-                        if (message.originator != config!!.data.serverIP)
+                        if (message.originator != Config.data.serverIP)
                             networkManager.badRequester(InetAddress.getByName(message.originator))
-                        else votingManager.decryptionMap = Json.decodeFromString<Map<String, String>>(message.data)
+                        else {
+                            val decryptionMap = Json.decodeFromString<Map<String, String>>(message.data)
+                            votingManager.setDecryptionMap(decryptionMap)
+                        }
                     }
                 }
             }

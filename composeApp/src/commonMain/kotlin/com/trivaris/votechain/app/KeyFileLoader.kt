@@ -7,7 +7,7 @@ import com.trivaris.votechain.voting.VotingManager
 import kotlinx.serialization.json.Json
 
 @Composable
-fun KeySelector() {
+fun KeyFileLoader() {
     FileLoader(
         onFileSelected = { file ->
             val json = file.decodeQRCode()

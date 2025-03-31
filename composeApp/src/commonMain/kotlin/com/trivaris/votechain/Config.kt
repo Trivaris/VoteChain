@@ -2,6 +2,7 @@ package com.trivaris.votechain
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.io.File
 
 @Serializable
 data class ConfigData(
@@ -10,24 +11,36 @@ data class ConfigData(
     val keypairAmount: Int,
     var serverIP: String,
     var debugMode: Boolean,
-    var isAndroid: Boolean,
     var isServer: Boolean
 )
 
-open class Config(sourceJson: String) {
+object Config {
     private val json = Json {prettyPrint = true}
-    var data: ConfigData = if (sourceJson.isBlank())
+    var data: ConfigData =
         ConfigData(
             difficulty = 3,
             printHashCalc = true,
             keypairAmount = 10,
             serverIP = "192.168.178.70",
             debugMode = true,
-            isAndroid = true,
             isServer = false
         )
-    else
-        json.decodeFromString(sourceJson)
-}
 
-var config: Config? = null
+    fun setSource(json: String) {
+        try {
+            data = Config.json.decodeFromString(json)
+        } catch (e: Exception) { e.printStackTrace() }
+        save()
+    }
+
+    fun save() {
+        try {
+            val file = File("config.json").apply { createNewFile() }
+            file.writeText(json.encodeToString(data))
+            println("New Config: " + file.readText())
+        } catch (e: Exception) {
+            println("Error saving config: ${e.message}")
+        }
+    }
+
+}

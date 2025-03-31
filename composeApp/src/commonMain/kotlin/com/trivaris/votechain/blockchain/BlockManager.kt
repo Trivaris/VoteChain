@@ -3,8 +3,8 @@ package com.trivaris.votechain.blockchain
 import com.trivaris.votechain.voting.VotingManager
 
 object BlockManager {
-    var chain = BlockStorage
-    var votingManager = VotingManager
+    private var chain = BlockStorage
+    private var votingManager = VotingManager
 
     fun makeNewestBlock(): Block {
         val block = Block(votingManager.currentVotes.toMutableMap(), chain.latestHash())

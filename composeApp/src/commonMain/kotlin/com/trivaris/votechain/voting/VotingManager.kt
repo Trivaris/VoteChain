@@ -10,14 +10,20 @@ import java.security.KeyPair
 object VotingManager {
     private var keypair: KeyPair? = null
 
-    var currentCandidate: Candidate = Candidate.entries.first()
-    var decryptionMap: Map<String, String> = mapOf()
+    private var currentCandidate: Candidate = Candidate.entries.first()
+    private var decryptionMap: Map<String, String> = mapOf()
 
     val currentVotes: MutableMap<String, String> = mutableMapOf()
-    var chain = BlockStorage
+    private var chain = BlockStorage
 
     fun setKeypair(keypair: KeyPair) {
         this.keypair = keypair
+    }
+    fun setDecryptionMap(decryptionMap: Map<String, String>) {
+        this.decryptionMap = decryptionMap
+    }
+    fun setCurrentCandidate(candidate: Candidate) {
+        this.currentCandidate = candidate
     }
 
     fun hasVoted(): Boolean =
@@ -27,7 +33,7 @@ object VotingManager {
         if (keypair == null) return null
         val candidateSignature = Cryptography.signData(currentCandidate.hash, keypair!!.private)
         return SerializableVote(
-            keypair!!.public.asString(),
+            keypair!!.public.asString().applySha256(),
             candidateSignature
         )
     }
@@ -48,10 +54,9 @@ object VotingManager {
     }
 
     fun countVotes(votes: MutableMap<String, String> = allVotes()): MutableMap<Candidate, Int> {
-        val candidateVotes: MutableMap<Candidate, Int> = mutableMapOf<Candidate, Int>()
+        val candidateVotes: MutableMap<Candidate, Int> = Candidate.entries.associateWith { 0 }.toMutableMap()
         votes.forEach { vote ->
-            val publicKey = decryptionMap[vote.key]?.toPublicKeyBytes() ?: continue
-            val candidate = Candidate.entries.first { Cryptography.verifySignature(it.hash, vote.value, publicKey)}
+            val candidate = SerializableVote(vote.key, vote.value).getCandidate(decryptionMap) ?: return@forEach
             val newVotes = candidateVotes.getOrDefault(candidate, 0) + 1
             candidateVotes[candidate] = newVotes
         }
@@ -59,17 +64,7 @@ object VotingManager {
     }
 
     fun interpretVote(vote: SerializableVote) {
-        currentVotes.putIfAbsent(vote.publicKeyString, vote.candidateSignature)
-
-        val publicKey = decryptionMap[vote.publicKeyStringHash]?.toPublicKeyBytes() ?: return
-        val candidate = Candidate.entries.first {
-            Cryptography.verifySignature(
-                it.hash,
-                vote.candidateSignature,
-                publicKey
-            )
-        }
-
-        println("New Vote for ${candidate.readableName}")
+        currentVotes.putIfAbsent(vote.publicKeyStringHash, vote.candidateSignature)
+        println("New Vote for ${vote.getCandidate(decryptionMap)?.readableName ?: "None"}")
     }
 }

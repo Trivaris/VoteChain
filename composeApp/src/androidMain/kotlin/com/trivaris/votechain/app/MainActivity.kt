@@ -4,62 +4,72 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.ui.platform.LocalContext
 import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanOptions
-import com.trivaris.votechain.Config
 import com.trivaris.votechain.blockchain.SerializableKeyPair
-import com.trivaris.votechain.config
 import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.voting.VotingManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import java.net.Inet4Address
 import java.net.NetworkInterface
 
 class MainActivity : ComponentActivity() {
 
-    private val barcodeLauncher: ActivityResultLauncher<ScanOptions> =
-        registerForActivityResult(ScanContract()) { result ->
-            if (result.contents == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
-            } else {
-                val scannedContent = result.contents
-                val keyPair = Json.decodeFromString<SerializableKeyPair>(scannedContent).getKeyPair()
+    private val barcodeLauncher = registerForActivityResult(ScanContract()) { result ->
+        result.contents?.let {
+            try {
+                val keyPair = Json.decodeFromString<SerializableKeyPair>(it).getKeyPair()
                 Toast.makeText(this, "Successfully Scanned Keypair!", Toast.LENGTH_LONG).show()
                 VotingManager.setKeypair(keyPair)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_LONG).show()
             }
-        }
+        } ?: Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        config = Config("")
-        CoroutineScope(Dispatchers.IO).launch {
-            val localip = getLocalIpAddress()
-            if (localip == "")
-                Toast.makeText(this@MainActivity, "Did not find local ip...", Toast.LENGTH_LONG).show()
-            else
-                Toast.makeText(this@MainActivity, "Found local ip: $localip", Toast.LENGTH_LONG).show()
-            NetworkManager.join(localip)
-        }
+        fetchLocalIpAndJoinNetwork()
 
         setContent {
-            AndroidApp(barcodeLauncher)
+            val context = LocalContext.current
+            App(
+                LoadKeysButton = { QRScannerButton(barcodeLauncher) },
+                onSettingsSaved = {
+                    Toast.makeText(context, "Saved Settings!", Toast.LENGTH_LONG).show()
+                },
+                onVoteFailed = {
+                    Toast.makeText(context, "You did not load your keys yet!", Toast.LENGTH_LONG).show()
+                }
+            )
         }
+    }
 
+    private fun fetchLocalIpAndJoinNetwork() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val localIp = getLocalIpAddress()
+            withContext(Dispatchers.Main) {
+                val message = if (localIp.isEmpty()) "Did not find local IP..." else "Found local IP: $localIp"
+                Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
+                if (localIp.isNotEmpty()) {
+                    NetworkManager.join(localIp)
+                }
+            }
+        }
     }
 }
 
 fun getLocalIpAddress(): String {
     return try {
-        val interfaces = NetworkInterface.getNetworkInterfaces()
-        interfaces.asSequence()
+        NetworkInterface.getNetworkInterfaces().asSequence()
             .flatMap { it.inetAddresses.asSequence() }
-            .firstOrNull { it is Inet4Address && !it.isLoopbackAddress }
-            ?.hostAddress.toString()
+            .filterIsInstance<Inet4Address>()
+            .firstOrNull { !it.isLoopbackAddress }
+            ?.hostAddress.orEmpty()
     } catch (e: Exception) {
         ""
     }

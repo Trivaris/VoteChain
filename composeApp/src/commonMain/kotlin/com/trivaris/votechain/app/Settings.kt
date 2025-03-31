@@ -9,14 +9,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.trivaris.votechain.config
+import com.trivaris.votechain.Config
 import kotlinx.serialization.json.Json
 
 val json = Json { prettyPrint = true }
 
 @Composable
-fun SettingsScreen() {
-    val configState = remember { mutableStateOf(config!!.data) }
+fun SettingsScreen(onSave: () -> Unit = {}) {
+    val configState = remember { mutableStateOf(Config.data) }
 
     Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
         Row {
@@ -31,14 +31,15 @@ fun SettingsScreen() {
 
         BooleanOption("Print Hash Calculation", configState.value.printHashCalc) { configState.value = configState.value.copy(printHashCalc = it) }
         BooleanOption("Debug Mode", configState.value.debugMode)        { configState.value = configState.value.copy(debugMode = it) }
-        BooleanOption("Is Android", configState.value.isAndroid)        { configState.value = configState.value.copy(isAndroid = it) }
         BooleanOption("Is Server",  configState.value.isServer)         { configState.value = configState.value.copy(isServer = it) }
 
         Spacer(Modifier.height(16.dp))
         Button(
             onClick = {
-                config?.data = configState.value
+                Config.data = configState.value
                 println(json.encodeToString(configState.value))
+                Config.save()
+                onSave()
             },
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green))
         {

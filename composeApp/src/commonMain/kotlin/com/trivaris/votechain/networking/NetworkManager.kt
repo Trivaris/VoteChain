@@ -1,6 +1,6 @@
 package com.trivaris.votechain.networking
 
-import com.trivaris.votechain.config
+import com.trivaris.votechain.Config
 import java.net.InetAddress
 
 object NetworkManager {
@@ -17,7 +17,7 @@ object NetworkManager {
         val joinRequest = Message(MessageType.JOIN_NETWORK)
         messageManager.outgoing(joinRequest)
         val keyRequest = Message(MessageType.KEYS_REQUEST, data = "GET")
-        messageManager.outgoing(keyRequest, InetAddress.getByName(config!!.data.serverIP))
+        messageManager.outgoing(keyRequest, InetAddress.getByName(Config.data.serverIP))
     }
 
     fun leave() {

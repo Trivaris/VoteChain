@@ -18,6 +18,7 @@ fun QRScannerButton(barcodeLauncher: ActivityResultLauncher<ScanOptions>) {
                 setBeepEnabled(false)
                 setBarcodeImageEnabled(true)
                 setOrientationLocked(false)
+                setPrompt("Scan Keypair")
             }
             barcodeLauncher.launch(options)
         },
