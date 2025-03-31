@@ -27,6 +27,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.trivaris.votechain.Config
+import com.trivaris.votechain.app.blockview.BlockGraph
+import com.trivaris.votechain.app.blockview.BlockMineButton
+import com.trivaris.votechain.app.counterview.CandidateVotes
+import com.trivaris.votechain.app.counterview.CountVotesButton
+import com.trivaris.votechain.app.settingsview.SettingsScreen
+import com.trivaris.votechain.app.votingview.DebugKeypairSelector
+import com.trivaris.votechain.app.votingview.KeysRequestButton
+import com.trivaris.votechain.app.votingview.Voting
 import com.trivaris.votechain.voting.Candidate
 import com.trivaris.votechain.voting.VotingManager
 

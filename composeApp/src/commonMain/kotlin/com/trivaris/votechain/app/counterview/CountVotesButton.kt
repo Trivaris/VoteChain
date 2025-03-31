@@ -1,4 +1,4 @@
-package com.trivaris.votechain.app
+package com.trivaris.votechain.app.counterview
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

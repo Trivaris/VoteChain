@@ -1,4 +1,4 @@
-package com.trivaris.votechain.app
+package com.trivaris.votechain.app.votingview
 
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults

@@ -1,11 +1,9 @@
-package com.trivaris.votechain.app
+package com.trivaris.votechain.app.blockview
 
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import com.trivaris.votechain.blockchain.BlockManager
 import com.trivaris.votechain.networking.Message

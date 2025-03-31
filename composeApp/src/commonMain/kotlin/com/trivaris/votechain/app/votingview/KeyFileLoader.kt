@@ -1,4 +1,4 @@
-package com.trivaris.votechain.app
+package com.trivaris.votechain.app.votingview
 
 import androidx.compose.runtime.Composable
 import com.trivaris.votechain.blockchain.SerializableKeyPair

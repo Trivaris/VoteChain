@@ -1,4 +1,4 @@
-package com.trivaris.votechain.app
+package com.trivaris.votechain.app.votingview
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
@@ -19,9 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import java.awt.FileDialog
 import java.awt.Frame
-import java.awt.image.BufferedImage
 import java.io.File
-import javax.imageio.ImageIO
 
 @Composable
 fun FileLoader(onFileSelected: (File) -> Unit) {

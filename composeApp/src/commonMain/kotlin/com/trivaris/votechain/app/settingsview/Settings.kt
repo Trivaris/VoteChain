@@ -1,4 +1,4 @@
-package com.trivaris.votechain.app
+package com.trivaris.votechain.app.settingsview
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*

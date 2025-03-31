@@ -1,4 +1,4 @@
-package com.trivaris.votechain.app
+package com.trivaris.votechain.app.blockview
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.trivaris.votechain.blockchain.Block
 import com.trivaris.votechain.blockchain.BlockStorage
 import com.trivaris.votechain.Config
+import com.trivaris.votechain.app.Logo
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
