@@ -15,9 +15,12 @@ object NetworkManager {
         this.ownAddress = ownAddress
 
         val joinRequest = Message(MessageType.JOIN_NETWORK)
-        messageManager.outgoing(joinRequest)
-        val keyRequest = Message(MessageType.KEYS_REQUEST, data = "GET")
-        messageManager.outgoing(keyRequest, InetAddress.getByName(Config.data.serverIP))
+        val joinEnvelope = MessageEnvelope(joinRequest)
+        messageManager.outgoing(joinEnvelope)
+
+        val keyRequest = Message(MessageType.KEYS_REQUEST)
+        val keysEnvelope = MessageEnvelope(keyRequest)
+        messageManager.outgoing(keysEnvelope)
     }
 
     fun leave() {

@@ -19,47 +19,55 @@ object MessageManager {
     private val networking = Networking
     private val server = Server
 
-    fun outgoing(message: Message, receiver: InetAddress = Networking.broadcastingAddress) {
+    fun outgoing(envelope: MessageEnvelope) {
+        val message = envelope.message
+        val receiver = envelope.recipient.replace("/", "")
+        println(receiver)
         when (message.type) {
             MessageType.JOIN_NETWORK -> {
-                CoroutineScope(Dispatchers.IO).launch { networking.broadcast(message.toByteArray()) }
+                CoroutineScope(Dispatchers.IO).launch { networking.send(envelope, InetAddress.getByName(Config.data.serverIP)) }
                 println("Connected.")
                 println("Starting Receiver...")
                 CoroutineScope(Dispatchers.IO).launch { networking.startReceiver() }
             }
 
             MessageType.LEAVE_NETWORK -> {
-                CoroutineScope(Dispatchers.IO).launch { networking.broadcast(message.toByteArray()) }
+                CoroutineScope(Dispatchers.IO).launch { networking.send(envelope) }
                 println("Disconnected.")
                 println("Stopping Receiver...")
                 CoroutineScope(Dispatchers.IO).launch { networking.stopReceiver() }
             }
             MessageType.VOTE -> {
                 println("Sending vote...")
-                CoroutineScope(Dispatchers.IO).launch { networking.broadcast(message.toByteArray()) }
+                CoroutineScope(Dispatchers.IO).launch { networking.send(envelope) }
             }
             MessageType.BLOCK -> {
                 println("Sending block...")
-                CoroutineScope(Dispatchers.IO).launch { networking.broadcast(message.toByteArray()) }
+                CoroutineScope(Dispatchers.IO).launch { networking.send(envelope) }
             }
             MessageType.KEYS_REQUEST -> {
-                println("Getting valid keys...")
-                CoroutineScope(Dispatchers.IO).launch { networking.send(message.toByteArray(), receiver) }
+                println("Getting valid Keys")
+                CoroutineScope(Dispatchers.IO).launch { networking.send(envelope) }
+            }
+            MessageType.KEYS_RESPONSE -> {
+                println("Sending Keys")
+                CoroutineScope(Dispatchers.IO).launch { networking.send(envelope, InetAddress.getByName(receiver)) }
             }
             MessageType.INVALID ->
                 println("Invalid message: $message")
         }
     }
 
-    fun incoming(message: Message) {
+    fun incoming(envelope: MessageEnvelope) {
+        val message = envelope.message
         when (message.type) {
             MessageType.JOIN_NETWORK -> {
-                val address = InetAddress.getByName(message.originator)
+                val address = InetAddress.getByName(envelope.originator)
                 networkManager.participantJoined(address)
             }
 
             MessageType.LEAVE_NETWORK -> {
-                val address = InetAddress.getByName(message.originator)
+                val address = InetAddress.getByName(envelope.originator)
                 networkManager.participantLeft(address)
             }
 
@@ -74,20 +82,16 @@ object MessageManager {
             }
 
             MessageType.KEYS_REQUEST -> {
-                when (message.data) {
-                    "GET" -> {
-                        val originator = InetAddress.getByName(message.originator)
-                        server.keysRequest(originator)
-                    }
+                val originator = InetAddress.getByName(envelope.originator)
+                server.keysResponse(originator)
+            }
 
-                    else -> {
-                        if (message.originator != Config.data.serverIP)
-                            networkManager.badRequester(InetAddress.getByName(message.originator))
-                        else {
-                            val decryptionMap = Json.decodeFromString<Map<String, String>>(message.data)
-                            votingManager.setDecryptionMap(decryptionMap)
-                        }
-                    }
+            MessageType.KEYS_RESPONSE -> {
+                if (envelope.originator != Config.data.serverIP)
+                    networkManager.badRequester(InetAddress.getByName(envelope.originator))
+                else {
+                    val decryptionMap = Json.decodeFromString<Map<String, String>>(message.data)
+                    votingManager.setDecryptionMap(decryptionMap)
                 }
             }
 

@@ -22,7 +22,7 @@ object Server {
         publicKeyHash to publicKeyString
     }
 
-    fun keysRequest(originator: InetAddress) {
+    fun keysResponse(originator: InetAddress) {
         val response = Message(MessageType.KEYS_REQUEST, data = Json.encodeToString(decryptionMap))
         MessageManager.outgoing(response, originator)
     }
