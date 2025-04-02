@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import com.trivaris.votechain.Config
 import com.trivaris.votechain.networking.MessageManager
 import com.trivaris.votechain.networking.Message
+import com.trivaris.votechain.networking.MessageEnvelope
+import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.voting.VotingManager
 import java.net.InetAddress
 
@@ -38,7 +40,10 @@ fun Voting(onVoteNull: () -> Unit) {
                     return@Button
                 }
                 val voteMessage = Message(vote)
-                MessageManager.outgoing(voteMessage, InetAddress.getByName(Config.data.serverIP))
+                NetworkManager.getParticipants().forEach {
+                    val envelope = MessageEnvelope(voteMessage, it)
+                    MessageManager.outgoing(envelope)
+                }
             },
             modifier = Modifier.width(100.dp).offset(y = 15.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),

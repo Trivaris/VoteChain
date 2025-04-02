@@ -24,6 +24,7 @@ google-zxing-core = { group = "com.google.zxing", name = "core", version.ref = "
 google-zxing-javase = { group = "com.google.zxing", name = "javase", version.ref = "qrcodes" }
 google-zxing-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "qrcode-reader" }
 stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin"}
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -62,11 +62,15 @@ kotlin {
             implementation(libs.google.zxing.core)
             implementation(libs.google.zxing.javase)
 
+            implementation(libs.kotlin.reflect)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
+    }
+    sourceSets.commonMain.dependencies {
+        implementation(kotlin("reflect"))
     }
 }
 

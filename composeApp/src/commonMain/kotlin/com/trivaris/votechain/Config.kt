@@ -37,9 +37,9 @@ object Config {
         try {
             val file = File("config.json").apply { createNewFile() }
             file.writeText(json.encodeToString(data))
-            println("New Config: " + file.readText())
+            println("[CONFIG] \n" + file.readText())
         } catch (e: Exception) {
-            println("Error saving config: ${e.message}")
+            println("[CONFIG] Error saving config: ${e.message}")
         }
     }
 

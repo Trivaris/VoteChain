@@ -1,26 +1,24 @@
 package com.trivaris.votechain.networking
 
-import com.trivaris.votechain.Config
-import java.net.InetAddress
+import com.trivaris.votechain.networking.messagehandlers.MessageType
 
 object NetworkManager {
     private val messageManager = MessageManager
-    private val recipients = mutableListOf<InetAddress>()
-    private val badRequesters = mutableListOf<InetAddress>()
+
+    private var participants = mutableListOf<String>()
+    private val badRequesters = mutableListOf<String>()
 
     var ownAddress = ""
 
     fun join(ownAddress: String) {
-        println("Own address $ownAddress")
+        println("[NETWORK] Own address $ownAddress")
         this.ownAddress = ownAddress
 
-        val joinRequest = Message(MessageType.JOIN_NETWORK)
-        val joinEnvelope = MessageEnvelope(joinRequest)
-        messageManager.outgoing(joinEnvelope)
+        val joinRequest = Message(MessageType.JOIN_REQUEST)
+        messageManager.outgoing(joinRequest)
 
-        val keyRequest = Message(MessageType.KEYS_REQUEST)
-        val keysEnvelope = MessageEnvelope(keyRequest)
-        messageManager.outgoing(keysEnvelope)
+//        val keyRequest = Message(MessageType.KEYS_REQUEST)
+//        messageManager.outgoing(keyRequest)
     }
 
     fun leave() {
@@ -28,18 +26,19 @@ object NetworkManager {
         messageManager.outgoing(message)
     }
 
-    fun participantJoined(address: InetAddress) {
-        println("New Participant: $address")
-        recipients.add(address)
+    fun setParticipants(new: MutableList<String>) {
+        participants = new
     }
 
-    fun participantLeft(address: InetAddress) {
-        println("Participant left: $address")
-        recipients.remove(address)
-    }
+    fun getParticipants() =
+        participants
 
-    fun badRequester(address: InetAddress) {
-        println("Bad Requester: $address")
+    fun participantJoined(address: String) =
+        participants.add(address)
+
+    fun participantLeft(address: String) =
+        participants.remove(address)
+
+    fun badRequester(address: String) =
         badRequesters.add(address)
-    }
 }

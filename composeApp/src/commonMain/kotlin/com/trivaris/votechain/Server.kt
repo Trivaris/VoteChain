@@ -1,9 +1,12 @@
 package com.trivaris.votechain
 
+import com.trivaris.votechain.app.settingsview.json
 import com.trivaris.votechain.blockchain.SerializableKeyPair
 import com.trivaris.votechain.networking.Message
+import com.trivaris.votechain.networking.MessageEnvelope
 import com.trivaris.votechain.networking.MessageManager
-import com.trivaris.votechain.networking.MessageType
+import com.trivaris.votechain.networking.NetworkManager
+import com.trivaris.votechain.networking.messagehandlers.MessageType
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.net.InetAddress
@@ -12,6 +15,8 @@ import javax.imageio.ImageIO
 import kotlin.collections.Map
 
 object Server {
+    private val participants: MutableList<String> = mutableListOf()
+
     private val keypairs: List<KeyPair> =
         if (Config.data.debugMode) debugKeypairs
         else List(Config.data.keypairAmount) { Cryptography.generateKeyPair() }
@@ -22,9 +27,10 @@ object Server {
         publicKeyHash to publicKeyString
     }
 
-    fun keysResponse(originator: InetAddress) {
-        val response = Message(MessageType.KEYS_REQUEST, data = Json.encodeToString(decryptionMap))
-        MessageManager.outgoing(response, originator)
+    fun keysResponse(originator: String) {
+        val message = Message(MessageType.KEYS_RESPONSE, Json.encodeToString(decryptionMap))
+        val envelope = MessageEnvelope(message, originator)
+        MessageManager.outgoing(envelope)
     }
 
     private fun saveKeys() {
@@ -39,9 +45,26 @@ object Server {
         }
     }
 
+    fun joinResponse(requester: String) {
+        participants.forEach {
+            println("[SERVER/DEBUG] Current participant: $it")
+            val newParticipantMessage = Message(MessageType.NEW_PARTICIPANT, requester)
+            val newParticipantEnvelope = MessageEnvelope(newParticipantMessage, it)
+            MessageManager.outgoing(newParticipantEnvelope)
+        }
+
+        participants.add(requester)
+        println("[SERVER/DEBUG] New participants: $participants")
+
+        val message = Message(MessageType.JOIN_RESPONSE, Json.encodeToString(participants))
+        val envelope = MessageEnvelope(message, requester)
+
+        MessageManager.outgoing(envelope)
+    }
+
     init {
         if (Config.data.isServer) {
-            println("Saving keys...")
+            println("[SERVER] Creating and saving keys...")
             saveKeys()
         }
     }

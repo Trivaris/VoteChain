@@ -7,7 +7,6 @@ import java.net.DatagramSocket
 import java.net.InetAddress
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
-import java.net.NetworkInterface
 
 const val PORT = 9235
 const val BUFFER_SIZE = 8192
@@ -20,12 +19,10 @@ object Networking {
         encodeDefaults = true
     }
 
-    fun send(message: Message, address: InetAddress = InetAddress.getByName(Config.data.serverIP)) =
-        send(MessageEnvelope(message), address)
     fun send(envelope: MessageEnvelope, address: InetAddress = InetAddress.getByName(Config.data.serverIP)) {
         val json = json.encodeToString(envelope)
         val data = "${json.length}::$json"
-        println("Sending $json")
+        println("[NETWORK] Sending ${envelope.message.type} to ${envelope.recipient}")
         val encoded = data.toByteArray()
         val packet = DatagramPacket(encoded, encoded.size, address, PORT)
         socket.send(packet)
@@ -41,9 +38,9 @@ object Networking {
                 val raw = packet.data.decodeToString()
                 val length = raw.substringBefore("::").toInt()
                 val json = raw.substringAfter("::").substring(0..<length)
-                println("Received: $json")
                 val envelope = Json.decodeFromString<MessageEnvelope>(json)
                 envelope.originator = packet.address.hostAddress
+                println("[NETWORK] Received ${envelope.message.type} from ${envelope.originator}")
                 MessageManager.incoming(envelope)
             }
         }

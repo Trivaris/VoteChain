@@ -37,6 +37,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val context = LocalContext.current
+            StdOutToastListener(context)
             App(
                 LoadKeysButton = { QRScannerButton(barcodeLauncher) },
                 onSettingsSaved = {

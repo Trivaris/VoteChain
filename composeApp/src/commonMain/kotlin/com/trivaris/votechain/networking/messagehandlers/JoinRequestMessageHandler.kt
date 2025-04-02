@@ -1,0 +1,26 @@
+package com.trivaris.votechain.networking.messagehandlers
+
+import com.trivaris.votechain.Config
+import com.trivaris.votechain.Server
+import com.trivaris.votechain.networking.MessageEnvelope
+import com.trivaris.votechain.networking.Networking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+class JoinRequestMessageHandler : MessageHandler {
+    override fun outgoing(envelope: MessageEnvelope) {
+        println("[PEER] Started Listening \n" +
+                "[PEER] Sent Request to join Network" )
+        CoroutineScope(Dispatchers.IO).launch { Networking.startReceiver() }
+        CoroutineScope(Dispatchers.IO).launch { Networking.send(envelope) }
+    }
+    override fun incoming(envelope: MessageEnvelope) {
+        if (!Config.data.isServer) return
+
+        val newParticipant = envelope.originator
+
+        println("[SERVER] New Participant: $newParticipant")
+        Server.joinResponse(newParticipant)
+    }
+}

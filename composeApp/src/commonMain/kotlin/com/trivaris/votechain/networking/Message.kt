@@ -1,6 +1,7 @@
 package com.trivaris.votechain.networking
 
 import com.trivaris.votechain.blockchain.Block
+import com.trivaris.votechain.networking.messagehandlers.MessageType
 import com.trivaris.votechain.voting.SerializableVote
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json

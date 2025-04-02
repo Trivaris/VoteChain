@@ -65,6 +65,6 @@ object VotingManager {
 
     fun interpretVote(vote: SerializableVote) {
         currentVotes.putIfAbsent(vote.publicKeyStringHash, vote.candidateSignature)
-        println("New Vote for ${vote.getCandidate(decryptionMap)?.readableName ?: "None"}")
+        println("[Peer] New Vote for ${vote.getCandidate(decryptionMap)?.readableName ?: "None"}")
     }
 }
