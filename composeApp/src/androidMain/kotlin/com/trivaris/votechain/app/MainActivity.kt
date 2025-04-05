@@ -1,11 +1,14 @@
 package com.trivaris.votechain.app
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
 import com.journeyapps.barcodescanner.ScanContract
+import com.trivaris.votechain.Config
+import com.trivaris.votechain.blockchain.DatabaseManager
 import com.trivaris.votechain.blockchain.SerializableKeyPair
 import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.voting.VotingManager
@@ -14,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import java.io.File
 import java.net.Inet4Address
 import java.net.NetworkInterface
 
@@ -35,9 +39,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         fetchLocalIpAndJoinNetwork()
 
+        val configJson = initializeConfig(this)
+        Config.setFile(File(this.filesDir, "config.json"))
+        Config.setSource(configJson)
+        Config.data.showLogLevels = false
+
+        DatabaseManager.init()
+
         setContent {
             val context = LocalContext.current
-            StdOutToastListener(context)
+            //StdOutToastListener(context)
             App(
                 LoadKeysButton = { QRScannerButton(barcodeLauncher) },
                 onSettingsSaved = {
@@ -61,6 +72,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+fun initializeConfig(context: Context): String {
+    return try {
+        val file = File(context.filesDir, "config.json")
+        if (!file.exists()) file.createNewFile()
+        file.readText()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
     }
 }
 

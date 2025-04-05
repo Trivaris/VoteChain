@@ -18,6 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.trivaris.votechain.Config
+import com.trivaris.votechain.Logger
 import com.trivaris.votechain.debugKeypairs
 import com.trivaris.votechain.voting.VotingManager
 
@@ -30,7 +32,8 @@ fun DebugKeypairSelector() {
         }
         Spacer(modifier = Modifier.width(8.dp))
         Button(onClick = {
-            VotingManager.setKeypair(debugKeypairs[selectedNumber.value])
+            Logger.INFO.log("Selected keypair: ${selectedNumber.value}")
+            VotingManager.setKeypair(debugKeypairs[selectedNumber.value - 1])
         }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green)) { Text("Set Debug Keypair") }
     }
 }
@@ -44,7 +47,7 @@ private fun NumberDropdown(selectedNumber: MutableState<Int>, onNumberSelected: 
             Text(selectedNumber.value.toString())
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            (1..10).forEach { number ->
+            (1..Config.data.keypairAmount).forEach { number ->
                 DropdownMenuItem(onClick = {
                     onNumberSelected(number)
                     expanded = false

@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,15 +27,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.trivaris.votechain.Config
+import com.trivaris.votechain.Logger
 import com.trivaris.votechain.app.blockview.BlockGraph
 import com.trivaris.votechain.app.blockview.BlockMineButton
 import com.trivaris.votechain.app.counterview.CandidateVotes
-import com.trivaris.votechain.app.counterview.CountVotesButton
 import com.trivaris.votechain.app.settingsview.SettingsScreen
 import com.trivaris.votechain.app.votingview.DebugKeypairSelector
+import com.trivaris.votechain.app.votingview.JoinRequestButton
 import com.trivaris.votechain.app.votingview.KeysRequestButton
+import com.trivaris.votechain.app.votingview.LeaveRequestButton
 import com.trivaris.votechain.app.votingview.Voting
-import com.trivaris.votechain.voting.Candidate
+import com.trivaris.votechain.blockchain.BlockStorage
+import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.voting.VotingManager
 
 @Composable
@@ -44,7 +47,6 @@ fun App(
     onVoteFailed: () -> Unit = {},
     onSettingsSaved: () -> Unit = {}
 ) {
-    val allVotes = remember { mutableStateOf(VotingManager.countVotes()) }
     var currentScreen by remember { mutableStateOf(Screen.MAIN) }
 
     Box(Modifier.fillMaxSize().background(Color(42, 42, 42))) {
@@ -53,7 +55,7 @@ fun App(
             onGraphClick = { currentScreen = toggleScreen(currentScreen, Screen.BLOCKS_GRAPH) }
         )
         Spacer(modifier = Modifier.height(24.dp))
-        ContentArea(currentScreen, allVotes, LoadKeysButton, onVoteFailed, onSettingsSaved)
+        ContentArea(currentScreen, LoadKeysButton, onVoteFailed, onSettingsSaved)
     }
 }
 
@@ -65,6 +67,15 @@ private fun TopBar(onSettingsClick: () -> Unit, onGraphClick: () -> Unit) {
         modifier = Modifier.fillMaxWidth().padding(16.dp),
         horizontalArrangement = Arrangement.End
     ) {
+        if (Config.data.debugMode)
+            IconButton(onClick = {
+                Logger.DEBUG.log("Resetting Settings")
+                NetworkManager.clearParticipants()
+                BlockStorage.clear()
+                VotingManager.clearCurrentVotes()
+            }) {
+                Icon(Icons.Default.Refresh, contentDescription = "Reset", tint = Color.White)
+            }
         IconButton(onClick = onSettingsClick) {
             Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color.White)
         }
@@ -77,7 +88,6 @@ private fun TopBar(onSettingsClick: () -> Unit, onGraphClick: () -> Unit) {
 @Composable
 private fun ContentArea(
     screen: Screen,
-    allVotes: MutableState<MutableMap<Candidate, Int>>,
     LoadKeysButton: @Composable () -> Unit = {},
     onVoteFailed: () -> Unit = {},
     onSettingsSaved: () -> Unit = {}
@@ -92,32 +102,34 @@ private fun ContentArea(
                 onSettingsSaved()
             }
             Screen.BLOCKS_GRAPH -> BlockGraph()
-            else -> MainContent(allVotes, LoadKeysButton, onVoteFailed)
+            else -> MainContent(LoadKeysButton, onVoteFailed)
         }
     }
 }
 
 @Composable
 private fun MainContent(
-    allVotes: MutableState<MutableMap<Candidate, Int>>,
     LoadKeysButton: @Composable () -> Unit = {},
     onVoteFailed: () -> Unit = {}
 ) {
+
     Voting {
         onVoteFailed()
     }
     if (!Config.data.debugMode) LoadKeysButton()
     else DebugKeypairSelector()
     Column {
-        if (Config.data.debugMode) Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-            KeysRequestButton()
-        }
+        if (Config.data.debugMode)
+            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                JoinRequestButton()
+                LeaveRequestButton()
+            }
         Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
             BlockMineButton()
-            CountVotesButton(allVotes)
+            KeysRequestButton()
         }
     }
-    CandidateVotes(votes = allVotes.value)
+    CandidateVotes()
 }
 
 private fun toggleScreen(current: Screen, target: Screen) = if (current == target) Screen.MAIN else target

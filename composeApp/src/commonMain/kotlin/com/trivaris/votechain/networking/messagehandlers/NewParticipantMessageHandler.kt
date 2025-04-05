@@ -1,6 +1,7 @@
 package com.trivaris.votechain.networking.messagehandlers
 
 import com.trivaris.votechain.Config
+import com.trivaris.votechain.Logger
 import com.trivaris.votechain.networking.MessageEnvelope
 import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.networking.Networking
@@ -13,7 +14,7 @@ class NewParticipantMessageHandler : MessageHandler {
     override fun outgoing(envelope: MessageEnvelope) {
         val recipient = InetAddress.getByName(envelope.recipient)
 
-        println("[SERVER] Broadcasting New Participant to: ${envelope.recipient}")
+        Logger.SERVER.log("Broadcasting New Participant to: ${envelope.recipient}")
         CoroutineScope(Dispatchers.IO).launch { Networking.send(envelope, recipient) }
     }
 
@@ -23,7 +24,7 @@ class NewParticipantMessageHandler : MessageHandler {
         val message = envelope.message
         val newParticipant = message.data
 
-        println("[PEER] New Participant: $newParticipant")
+        Logger.PEER.log("New Participant: $newParticipant")
         NetworkManager.participantJoined(newParticipant)
     }
 }

@@ -63,6 +63,11 @@ kotlin {
             implementation(libs.google.zxing.javase)
 
             implementation(libs.kotlin.reflect)
+
+            implementation(libs.exposed.core)
+            implementation(libs.exposed.dao)
+            implementation(libs.exposed.jdbc)
+            implementation(libs.sqlite.jdbc)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -129,7 +134,7 @@ compose.desktop {
         nativeDistributions {
             windows {
                 includeAllModules = true
-                iconFile.set(project.file("src\\resources\\icon.ico"))
+                iconFile.set(project.file("src\\resources\\icon.png"))
             }
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "VoteChain"
@@ -140,6 +145,12 @@ compose.desktop {
         }
 
     }
+}
+
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.trivaris.votechain.resources"
+    generateResClass = auto
 }
 
 tasks.withType<Jar> {

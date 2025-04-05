@@ -4,5 +4,6 @@
     "keypairAmount": 10,
     "serverIP": "192.168.178.70",
     "debugMode": true,
-    "isServer": true
+    "isServer": true,
+    "showLogLevels": true
 }

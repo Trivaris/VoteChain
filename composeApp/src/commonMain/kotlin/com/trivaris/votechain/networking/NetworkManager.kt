@@ -1,37 +1,54 @@
 package com.trivaris.votechain.networking
 
+import com.trivaris.votechain.Logger
+import com.trivaris.votechain.blockchain.Block
 import com.trivaris.votechain.networking.messagehandlers.MessageType
+import com.trivaris.votechain.voting.SerializableVote
 
 object NetworkManager {
-    private val messageManager = MessageManager
-
-    private var participants = mutableListOf<String>()
-    private val badRequesters = mutableListOf<String>()
+    private var participants = mutableSetOf<String>()
+    private val badRequesters = mutableSetOf<String>()
 
     var ownAddress = ""
 
-    fun join(ownAddress: String) {
-        println("[NETWORK] Own address $ownAddress")
+    fun join(ownAddress: String = this.ownAddress) {
+        Logger.NETWORK.log("Own address $ownAddress")
         this.ownAddress = ownAddress
 
         val joinRequest = Message(MessageType.JOIN_REQUEST)
-        messageManager.outgoing(joinRequest)
-
-//        val keyRequest = Message(MessageType.KEYS_REQUEST)
-//        messageManager.outgoing(keyRequest)
+        MessageManager.outgoing(joinRequest)
     }
 
     fun leave() {
         val message = Message(MessageType.LEAVE_NETWORK)
-        messageManager.outgoing(message)
+        MessageManager.outgoing(message)
     }
 
-    fun setParticipants(new: MutableList<String>) {
+    fun requestKeys() {
+        val message = Message(MessageType.KEYS_REQUEST)
+        MessageManager.outgoing(message)
+    }
+
+    fun broadcast(block: Block) =
+        broadcast(Message(block))
+    fun broadcast(vote: SerializableVote) =
+        broadcast(Message(vote))
+
+    private fun broadcast(message: Message) {
+        Logger.NETWORK.log("Broadcasting to: $participants")
+        participants.forEach {
+            val envelope = MessageEnvelope(message, it)
+            MessageManager.outgoing(envelope)
+        }
+    }
+
+    fun setParticipants(new: MutableSet<String>) {
+        Logger.PEER.log("Setting Participants to $new")
         participants = new
     }
 
-    fun getParticipants() =
-        participants
+    fun clearParticipants() =
+        participants.clear()
 
     fun participantJoined(address: String) =
         participants.add(address)

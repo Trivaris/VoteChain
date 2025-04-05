@@ -1,6 +1,8 @@
 package com.trivaris.votechain.networking.messagehandlers
 
+import com.trivaris.votechain.Logger
 import com.trivaris.votechain.networking.MessageEnvelope
+import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.networking.Networking
 import com.trivaris.votechain.voting.SerializableVote
 import com.trivaris.votechain.voting.VotingManager
@@ -14,7 +16,7 @@ class VoteMessageHandler : MessageHandler {
     override fun outgoing(envelope: MessageEnvelope) {
         val recipient = InetAddress.getByName(envelope.recipient)
 
-        println("[PEER] Sending vote")
+        Logger.PEER.log("Sending vote")
         CoroutineScope(Dispatchers.IO).launch { Networking.send(envelope, recipient) }
     }
     override fun incoming(envelope: MessageEnvelope) {
@@ -22,5 +24,8 @@ class VoteMessageHandler : MessageHandler {
         val vote = Json.decodeFromString<SerializableVote>(message.data)
 
         VotingManager.interpretVote(vote)
+        if (VotingManager.isDecryptionMapEmpty) {
+            NetworkManager.requestKeys()
+        } else VotingManager.updateVotes()
     }
 }

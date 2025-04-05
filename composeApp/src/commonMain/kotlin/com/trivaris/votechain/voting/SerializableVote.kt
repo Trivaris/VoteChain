@@ -1,7 +1,7 @@
 package com.trivaris.votechain.voting
 
 import com.trivaris.votechain.Cryptography
-import com.trivaris.votechain.toPublicKeyBytes
+import com.trivaris.votechain.toPublicKey
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,7 +10,7 @@ data class SerializableVote(
     val candidateSignature: String
 ) {
     fun getCandidate(decryptionMap: Map<String, String>): Candidate? {
-        val publicKey = decryptionMap[this.publicKeyStringHash]?.toPublicKeyBytes() ?: return null
+        val publicKey = decryptionMap[this.publicKeyStringHash]?.toPublicKey() ?: return null
         return Candidate.entries.first {
             Cryptography.verifySignature(
                 it.hash,

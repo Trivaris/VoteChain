@@ -1,22 +1,21 @@
 package com.trivaris.votechain.blockchain
 
+import com.trivaris.votechain.Logger
 import com.trivaris.votechain.voting.VotingManager
 
 object BlockManager {
-    private var chain = BlockStorage
-    private var votingManager = VotingManager
 
     fun makeNewestBlock(): Block {
-        val block = Block(votingManager.currentVotes.toMutableMap(), chain.latestHash())
-        votingManager.currentVotes.clear()
+        val block = Block(VotingManager.getCurrentVotes(), BlockStorage.latestHash())
         return block.apply { mine() }
     }
 
     fun newBlock(block: Block) {
         if (block.validity() == null) {
-            println("Adding valid Block")
-            chain.add(block)
+            Logger.PEER.log("Adding valid Block")
+            VotingManager.removeFromCurrentVotes(block.votes)
+            BlockStorage.add(block)
         }
-        else println("Block was invalid")
+        else Logger.PEER.log("Block was invalid")
     }
 }

@@ -12,13 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.trivaris.votechain.Config
-import com.trivaris.votechain.networking.MessageManager
-import com.trivaris.votechain.networking.Message
-import com.trivaris.votechain.networking.MessageEnvelope
+import com.trivaris.votechain.Logger
 import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.voting.VotingManager
-import java.net.InetAddress
 
 @Composable
 fun Voting(onVoteNull: () -> Unit) {
@@ -36,14 +32,12 @@ fun Voting(onVoteNull: () -> Unit) {
             onClick = {
                 val vote = VotingManager.makeVote()
                 if (vote == null) {
+                    Logger.INFO.log("Vote was null")
                     onVoteNull()
                     return@Button
                 }
-                val voteMessage = Message(vote)
-                NetworkManager.getParticipants().forEach {
-                    val envelope = MessageEnvelope(voteMessage, it)
-                    MessageManager.outgoing(envelope)
-                }
+                Logger.PEER.log("Sending Vote")
+                NetworkManager.broadcast(vote)
             },
             modifier = Modifier.width(100.dp).offset(y = 15.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),

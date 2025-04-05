@@ -1,6 +1,7 @@
 package com.trivaris.votechain.networking
 
 import com.trivaris.votechain.Config
+import com.trivaris.votechain.Logger
 import kotlinx.coroutines.Job
 import java.net.DatagramPacket
 import java.net.DatagramSocket
@@ -22,7 +23,7 @@ object Networking {
     fun send(envelope: MessageEnvelope, address: InetAddress = InetAddress.getByName(Config.data.serverIP)) {
         val json = json.encodeToString(envelope)
         val data = "${json.length}::$json"
-        println("[NETWORK] Sending ${envelope.message.type} to ${envelope.recipient}")
+        Logger.NETWORK.log("Sending ${envelope.message.type} to ${envelope.recipient}")
         val encoded = data.toByteArray()
         val packet = DatagramPacket(encoded, encoded.size, address, PORT)
         socket.send(packet)
@@ -39,8 +40,8 @@ object Networking {
                 val length = raw.substringBefore("::").toInt()
                 val json = raw.substringAfter("::").substring(0..<length)
                 val envelope = Json.decodeFromString<MessageEnvelope>(json)
-                envelope.originator = packet.address.hostAddress
-                println("[NETWORK] Received ${envelope.message.type} from ${envelope.originator}")
+                envelope.originator = packet.address.hostAddress ?: ""
+                Logger.NETWORK.log("Received ${envelope.message.type} from ${envelope.originator}")
                 MessageManager.incoming(envelope)
             }
         }

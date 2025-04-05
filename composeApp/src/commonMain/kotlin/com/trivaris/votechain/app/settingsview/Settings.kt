@@ -10,6 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trivaris.votechain.Config
+import com.trivaris.votechain.Logger
 import kotlinx.serialization.json.Json
 
 val json = Json { prettyPrint = true }
@@ -37,7 +38,7 @@ fun SettingsScreen(onSave: () -> Unit = {}) {
         Button(
             onClick = {
                 Config.data = configState.value
-                println(json.encodeToString(configState.value))
+                Logger.INFO.log(json.encodeToString(configState.value))
                 Config.save()
                 onSave()
             },

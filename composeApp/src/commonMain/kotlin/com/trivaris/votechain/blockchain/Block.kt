@@ -1,6 +1,7 @@
 package com.trivaris.votechain.blockchain
 
 import com.trivaris.votechain.Config
+import com.trivaris.votechain.Logger
 import com.trivaris.votechain.applySha256
 import kotlinx.serialization.Serializable
 import java.util.Date
@@ -27,9 +28,9 @@ open class Block(
                 break
             nonce++
             if (Config.data.printHashCalc)
-                println(nonce)
+                Logger.INFO.log(nonce)
         }
-        println("Block mined!: $hash")
+        Logger.INFO.log("Block mined: $hash")
     }
 
     fun validity(): String? {

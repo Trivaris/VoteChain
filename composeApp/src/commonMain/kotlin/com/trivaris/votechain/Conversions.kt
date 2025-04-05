@@ -22,7 +22,7 @@ import javax.imageio.ImageIO
 fun PublicKey.asString(): String =
     Base64.getEncoder().encodeToString(this.encoded)
 
-fun String.toPublicKeyBytes(): PublicKey {
+fun String.toPublicKey(): PublicKey {
     val publicKeyBytes = Base64.getDecoder().decode(this)
     val keyFactory = KeyFactory.getInstance(ALGORITHM)
     val keySpec = X509EncodedKeySpec(publicKeyBytes)
@@ -32,7 +32,7 @@ fun String.toPublicKeyBytes(): PublicKey {
 fun PrivateKey.asString(): String =
     Base64.getEncoder().encodeToString(this.encoded)
 
-fun String.toPrivateKeyBytes(): PrivateKey {
+fun String.toPrivateKey(): PrivateKey {
     val privateKeyBytes = Base64.getDecoder().decode(this)
     val keyFactory = KeyFactory.getInstance(ALGORITHM)
     val keySpec = PKCS8EncodedKeySpec(privateKeyBytes)

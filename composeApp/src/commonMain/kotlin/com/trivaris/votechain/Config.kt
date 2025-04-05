@@ -11,11 +11,13 @@ data class ConfigData(
     val keypairAmount: Int,
     var serverIP: String,
     var debugMode: Boolean,
-    var isServer: Boolean
+    var isServer: Boolean,
+    var showLogLevels: Boolean
 )
 
 object Config {
-    private val json = Json {prettyPrint = true}
+    private val json = Json { prettyPrint = true }
+    private var file = File("config.json")
     var data: ConfigData =
         ConfigData(
             difficulty = 3,
@@ -23,8 +25,13 @@ object Config {
             keypairAmount = 10,
             serverIP = "192.168.178.70",
             debugMode = true,
-            isServer = false
+            isServer = false,
+            showLogLevels = true
         )
+
+    fun setFile(new: File) {
+        file = new
+    }
 
     fun setSource(json: String) {
         try {
@@ -35,11 +42,10 @@ object Config {
 
     fun save() {
         try {
-            val file = File("config.json").apply { createNewFile() }
             file.writeText(json.encodeToString(data))
-            println("[CONFIG] \n" + file.readText())
+            Logger.CONFIG.log("\n" + file.readText())
         } catch (e: Exception) {
-            println("[CONFIG] Error saving config: ${e.message}")
+            Logger.CONFIG.log("Error saving config", e.message.toString())
         }
     }
 

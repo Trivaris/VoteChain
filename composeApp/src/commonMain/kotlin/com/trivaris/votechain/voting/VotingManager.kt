@@ -1,70 +1,82 @@
 package com.trivaris.votechain.voting
 
+import androidx.compose.runtime.mutableStateOf
 import com.trivaris.votechain.Cryptography
+import com.trivaris.votechain.Logger
+import com.trivaris.votechain.app.Logo
 import com.trivaris.votechain.applySha256
 import com.trivaris.votechain.asString
 import com.trivaris.votechain.blockchain.BlockStorage
-import com.trivaris.votechain.toPublicKeyBytes
 import java.security.KeyPair
 
 object VotingManager {
     private var keypair: KeyPair? = null
-
     private var currentCandidate: Candidate = Candidate.entries.first()
-    private var decryptionMap: Map<String, String> = mapOf()
+    private var decryptionMap: Map<String, String> = emptyMap()
+    private var currentVotes: MutableMap<String, String> = mutableMapOf()
 
-    val currentVotes: MutableMap<String, String> = mutableMapOf()
-    private var chain = BlockStorage
+    val votes = mutableStateOf(countVotes())
 
-    fun setKeypair(keypair: KeyPair) {
-        this.keypair = keypair
+    fun setKeypair(newKeypair: KeyPair) {
+        keypair = newKeypair
     }
-    fun setDecryptionMap(decryptionMap: Map<String, String>) {
-        this.decryptionMap = decryptionMap
+
+    fun setDecryptionMap(newDecryptionMap: Map<String, String>) {
+        decryptionMap = newDecryptionMap
     }
+
+    val isDecryptionMapEmpty: Boolean
+        get() = decryptionMap.isEmpty()
+
+    fun updateVotes() {
+        votes.value = countVotes()
+    }
+
     fun setCurrentCandidate(candidate: Candidate) {
-        this.currentCandidate = candidate
+        currentCandidate = candidate
     }
 
-    fun hasVoted(): Boolean =
-        allVotes().containsKey(keypair?.public?.asString())
+    fun setCurrentVotes(newVotes: MutableMap<String, String>) {
+        currentVotes = newVotes
+    }
+    fun getCurrentVotes(): MutableMap<String, String> = currentVotes.toMutableMap()
+    fun removeFromCurrentVotes(toRemove: MutableMap<String, String>) = currentVotes.keys.removeAll(toRemove.keys)
+    fun clearCurrentVotes() = currentVotes.clear()
 
     fun makeVote(): SerializableVote? {
-        if (keypair == null) return null
-        val candidateSignature = Cryptography.signData(currentCandidate.hash, keypair!!.private)
-        return SerializableVote(
-            keypair!!.public.asString().applySha256(),
-            candidateSignature
-        )
+        return keypair?.let { kp ->
+            val candidateSignature = Cryptography.signData(currentCandidate.hash, kp.private)
+            SerializableVote(kp.public.asString().applySha256(), candidateSignature)
+        }
     }
 
-    private fun allVotes(): MutableMap<String, String> {
-        val votes = mutableMapOf<String, String>()
-        val longest = chain.longestChain()
-        longest.forEach { block ->
-            block.votes.forEach {
-                votes.putIfAbsent(it.key, it.value)
+    private fun allVotes(): MutableMap<String, String> =
+        mutableMapOf<String, String>().apply {
+            BlockStorage.longestChain().forEach { block ->
+                block.votes.forEach { (key, value) ->
+                    putIfAbsent(key, value)
+                }
+            }
+            currentVotes.forEach { (key, value) ->
+                putIfAbsent(key, value)
             }
         }
-        currentVotes.forEach {
-            votes.putIfAbsent(it.key, it.value)
-        }
 
-        return votes
-    }
+    private fun countVotes(votesMap: Map<String, String> = allVotes()): MutableMap<Candidate, Int> {
+        val counts = votesMap.mapNotNull { (publicKey, signature) ->
+            SerializableVote(publicKey, signature).getCandidate(decryptionMap)
+        }.groupingBy { it }
+            .eachCount()
+            .toMutableMap()
 
-    fun countVotes(votes: MutableMap<String, String> = allVotes()): MutableMap<Candidate, Int> {
-        val candidateVotes: MutableMap<Candidate, Int> = Candidate.entries.associateWith { 0 }.toMutableMap()
-        votes.forEach { vote ->
-            val candidate = SerializableVote(vote.key, vote.value).getCandidate(decryptionMap) ?: return@forEach
-            val newVotes = candidateVotes.getOrDefault(candidate, 0) + 1
-            candidateVotes[candidate] = newVotes
+        Candidate.entries.forEach { candidate ->
+            counts.putIfAbsent(candidate, 0)
         }
-        return candidateVotes
+        return counts
     }
 
     fun interpretVote(vote: SerializableVote) {
         currentVotes.putIfAbsent(vote.publicKeyStringHash, vote.candidateSignature)
-        println("[Peer] New Vote for ${vote.getCandidate(decryptionMap)?.readableName ?: "None"}")
+        Logger.PEER.log("New Vote for ${vote.getCandidate(decryptionMap)?.readableName ?: "None"}")
     }
 }
