@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
 import com.journeyapps.barcodescanner.ScanContract
 import com.trivaris.votechain.Config
+import com.trivaris.votechain.blockchain.DatabaseInfo
 import com.trivaris.votechain.blockchain.DatabaseManager
 import com.trivaris.votechain.blockchain.SerializableKeyPair
 import com.trivaris.votechain.networking.NetworkManager
@@ -37,18 +38,30 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fetchLocalIpAndJoinNetwork()
+
+
 
         val configJson = initializeConfig(this)
-        Config.setFile(File(this.filesDir, "config.json"))
+        val configFile = File(this.filesDir, "config.json")
+        val databaseInfo = DatabaseInfo(
+            file = File(this.filesDir, "blocks.db"),
+            driver = "org.sqldroid.SQLDroidDriver",
+            url = "jdbc:sqlite"
+        )
+
+        databaseInfo.file.delete()
+        databaseInfo.file.apply { createNewFile() }
+
+        Config.setFile(configFile)
         Config.setSource(configJson)
         Config.data.showLogLevels = false
+        DatabaseManager.init(databaseInfo)
 
-        DatabaseManager.init()
+        fetchLocalIpAndJoinNetwork()
 
         setContent {
             val context = LocalContext.current
-            //StdOutToastListener(context)
+            StdOutToastListener(context)
             App(
                 LoadKeysButton = { QRScannerButton(barcodeLauncher) },
                 onSettingsSaved = {

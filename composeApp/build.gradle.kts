@@ -68,6 +68,9 @@ kotlin {
             implementation(libs.exposed.dao)
             implementation(libs.exposed.jdbc)
             implementation(libs.sqlite.jdbc)
+            implementation("org.sqldroid:sqldroid:1.0.3") {
+                exclude(group = "org.xerial", module = "sqlite-jdbc")
+            }
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

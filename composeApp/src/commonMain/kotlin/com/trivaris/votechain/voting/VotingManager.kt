@@ -3,7 +3,6 @@ package com.trivaris.votechain.voting
 import androidx.compose.runtime.mutableStateOf
 import com.trivaris.votechain.Cryptography
 import com.trivaris.votechain.Logger
-import com.trivaris.votechain.app.Logo
 import com.trivaris.votechain.applySha256
 import com.trivaris.votechain.asString
 import com.trivaris.votechain.blockchain.BlockStorage

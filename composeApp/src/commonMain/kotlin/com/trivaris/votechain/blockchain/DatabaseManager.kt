@@ -1,14 +1,19 @@
 package com.trivaris.votechain.blockchain
 
+import com.trivaris.votechain.Logger
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
+import java.io.File
+
 
 object DatabaseManager {
-    fun init() {
-        Database.connect("jdbc:sqlite:blocks.db", driver = "org.sqlite.JDBC")
-        transaction {
-            SchemaUtils.create(BlocksTable)
-        }
+    fun init(info: DatabaseInfo) {
+        Logger.INFO.log("Database path: ${info.file.absolutePath}")
+        Database.connect("${info.url}:${info.file.absolutePath}", driver = info.driver)
     }
 }
+
+data class DatabaseInfo(
+    val file: File,
+    val driver: String,
+    val url: String
+)

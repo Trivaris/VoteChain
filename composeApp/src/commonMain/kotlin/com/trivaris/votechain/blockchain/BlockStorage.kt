@@ -61,7 +61,7 @@ object BlockStorage {
             val chain = mutableListOf<Block>()
             var currentBlock: Block? = block
             while (currentBlock != null && currentBlock.previousHash.isNotEmpty()) {
-                chain.add(0, currentBlock) // Prepend to preserve order from genesis to endpoint.
+                chain.add(0, currentBlock)
                 currentBlock = blocks[currentBlock.previousHash]
             }
             currentBlock?.let { chain.add(0, it) }

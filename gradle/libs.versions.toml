@@ -13,6 +13,7 @@ kotlinx-coroutines = "1.10.1"
 kotlinx-serialization = "1.8.0"
 qrcodes = "3.4.1"
 qrcode-reader = "4.3.0"
+sqldroid = "1.0.3"
 sqliteJdbc = "3.36.0.3"
 
 [libraries]
@@ -28,6 +29,7 @@ kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-seria
 google-zxing-core = { group = "com.google.zxing", name = "core", version.ref = "qrcodes" }
 google-zxing-javase = { group = "com.google.zxing", name = "javase", version.ref = "qrcodes" }
 google-zxing-embedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "qrcode-reader" }
+sqldroid = { module = "org.sqldroid:sqldroid", version.ref = "sqldroid" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqliteJdbc" }
 stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin"}
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin"}
