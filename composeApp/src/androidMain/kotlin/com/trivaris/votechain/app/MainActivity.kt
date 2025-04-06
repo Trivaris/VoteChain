@@ -45,6 +45,7 @@ class MainActivity : ComponentActivity() {
         Config.setFile(configFile)
         Config.setSource(configJson)
         Config.data.showLogLevels = false
+        Config.data.printHashCalc = false
 
         val driverFactory = DriverFactory(this)
         BlockDatabaseManager.initDatabase(driverFactory)

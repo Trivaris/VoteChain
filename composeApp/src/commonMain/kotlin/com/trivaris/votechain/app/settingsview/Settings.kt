@@ -29,6 +29,8 @@ fun SettingsScreen(onSave: () -> Unit = {}) {
         IntOption("Difficulty",     configState.value.difficulty)       { configState.value = configState.value.copy(difficulty = it) }
         IntOption("Keypair Amount", configState.value.keypairAmount)    { configState.value = configState.value.copy(keypairAmount = it) }
         StringOption("Server IP",   configState.value.serverIP)         { configState.value = configState.value.copy(serverIP = it) }
+        IntOption("Server Port",    configState.value.serverPort)       { configState.value = configState.value.copy(serverPort = it) }
+        IntOption("Receiving Port", configState.value.receivingPort)    { configState.value = configState.value.copy(receivingPort = it) }
 
         BooleanOption("Print Hash Calculation", configState.value.printHashCalc) { configState.value = configState.value.copy(printHashCalc = it) }
         BooleanOption("Debug Mode", configState.value.debugMode)        { configState.value = configState.value.copy(debugMode = it) }

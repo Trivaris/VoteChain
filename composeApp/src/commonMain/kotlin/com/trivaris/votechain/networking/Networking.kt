@@ -2,54 +2,67 @@ package com.trivaris.votechain.networking
 
 import com.trivaris.votechain.Config
 import com.trivaris.votechain.Logger
-import kotlinx.coroutines.Job
-import java.net.DatagramPacket
-import java.net.DatagramSocket
 import java.net.InetAddress
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
-
-const val PORT = 9235
-const val BUFFER_SIZE = 8192
+import java.net.ConnectException
+import java.net.ServerSocket
+import java.net.Socket
+import java.net.SocketException
 
 object Networking {
-    private val socket = DatagramSocket(PORT)
-    private var receiverJob: Job = Job().apply { cancel() }
-    private val json = Json {
-        prettyPrint = true
-        encodeDefaults = true
-    }
+    private var serverSocket: ServerSocket = ServerSocket(Config.data.receivingPort).apply { close() }
+    private val scope = CoroutineScope(Dispatchers.IO)
 
-    fun send(envelope: MessageEnvelope, address: InetAddress = InetAddress.getByName(Config.data.serverIP)) {
-        val json = json.encodeToString(envelope)
-        val data = "${json.length}::$json"
-        Logger.NETWORK.log("Sending ${envelope.message.type} to ${envelope.recipient}")
-        val encoded = data.toByteArray()
-        val packet = DatagramPacket(encoded, encoded.size, address, PORT)
-        socket.send(packet)
-    }
+    fun startServer() {
+        synchronized(this) {
+            if (!serverSocket.isClosed) {
+                Logger.NETWORK.log("Server is already running.")
+                return
+            }
+            serverSocket = ServerSocket(Config.data.receivingPort)
+        }
 
-    fun startReceiver() {
-        receiverJob = CoroutineScope(Dispatchers.IO).launch {
-            val buffer = ByteArray(BUFFER_SIZE)
-            val packet = DatagramPacket(buffer, buffer.size)
+        Logger.NETWORK.log("Starting server on port ${Config.data.receivingPort}...")
+        scope.launch {
+            try {
+                while (true) {
+                    val client = serverSocket.accept()
+                    val input = client.inputStream
+                    val data = input.readBytes().decodeToString()
+                    val envelope = Json.decodeFromString<MessageEnvelope>(data)
 
-            while (isActive) {
-                socket.receive(packet)
-                val raw = packet.data.decodeToString()
-                val length = raw.substringBefore("::").toInt()
-                val json = raw.substringAfter("::").substring(0..<length)
-                val envelope = Json.decodeFromString<MessageEnvelope>(json)
-                envelope.originator = packet.address.hostAddress ?: ""
-                Logger.NETWORK.log("Received ${envelope.message.type} from ${envelope.originator}")
-                MessageManager.incoming(envelope)
+                    MessageManager.incoming(envelope)
+                }
+            } catch (_: Exception) {
+                Logger.NETWORK.log("Server closed")
             }
         }
     }
 
-    fun stopReceiver() =
-        receiverJob.cancel()
+    fun stopServer() {
+        synchronized(this) {
+            if (serverSocket.isClosed) {
+                Logger.NETWORK.log("Server is not running.")
+                return
+            }
+            serverSocket.close()
+        }
+    }
 
-    fun isConnected(): Boolean =
-        receiverJob.isActive
+    fun send(envelope: MessageEnvelope, address: InetAddress = InetAddress.getByName(Config.data.serverIP)) {
+        scope.launch {
+            try {
+                val socket = Socket(address, Config.data.serverPort)
+                val output = socket.getOutputStream()
+                Logger.NETWORK.log("Sending ${envelope.message.type} to $address")
+                output.write(Json.encodeToString(envelope).toByteArray())
+                output.flush()
+                socket.close()
+            } catch (_: Exception) {
+                Logger.NETWORK.log("Did not send ${envelope.message.type}, server is not running")
+            }
+        }
+    }
+
 }

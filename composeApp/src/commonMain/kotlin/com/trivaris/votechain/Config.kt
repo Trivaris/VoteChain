@@ -6,10 +6,12 @@ import java.io.File
 
 @Serializable
 data class ConfigData(
-    val difficulty: Int,
-    val printHashCalc: Boolean,
-    val keypairAmount: Int,
+    var difficulty: Int,
+    var keypairAmount: Int,
     var serverIP: String,
+    var serverPort: Int = 9235,
+    var receivingPort: Int = 9235,
+    var printHashCalc: Boolean,
     var debugMode: Boolean,
     var isServer: Boolean,
     var showLogLevels: Boolean
