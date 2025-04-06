@@ -1,4 +1,4 @@
-rootProject.name = "VoteChainApp"
+rootProject.name = "VoteChain"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

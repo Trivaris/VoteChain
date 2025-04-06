@@ -4,8 +4,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.trivaris.votechain.Config
 import com.trivaris.votechain.app.votingview.KeyFileLoader
-import com.trivaris.votechain.blockchain.DatabaseInfo
-import com.trivaris.votechain.blockchain.DatabaseManager
+import com.trivaris.votechain.blockchain.BlockDatabaseManager
+import com.trivaris.votechain.blockchain.database.DriverFactory
 import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.resources.Res
 import com.trivaris.votechain.resources.icon_round
@@ -15,16 +15,11 @@ import java.net.InetAddress
 
 fun main() {
     val configFile = File("config.json")
-    val databaseInfo = DatabaseInfo(
-        file = File("blocks.db").apply { createNewFile() },
-        driver = "org.sqlite.JDBC",
-        url = "jdbc:sqlite"
-    )
-
     Config.setFile(configFile)
     Config.setSource(getConfigJson())
 
-    DatabaseManager.init(databaseInfo)
+    val driverFactory = DriverFactory()
+    BlockDatabaseManager.initDatabase(driverFactory)
 
     NetworkManager.join(InetAddress.getLocalHost().hostAddress)
 

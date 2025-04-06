@@ -1,4 +1,4 @@
-package com.trivaris.votechain.blockchain
+package com.trivaris.votechain.blockchain.database
 
 import com.trivaris.votechain.Config
 import com.trivaris.votechain.Logger
@@ -7,12 +7,12 @@ import kotlinx.serialization.Serializable
 import java.util.Date
 
 @Serializable
-open class Block(
+open class BlockObject(
     val votes: MutableMap<String, String>,
     val previousHash: String,
 
     val timestamp: Long = Date().time,
-    var nonce: Int = 0,
+    var nonce: Long = 0,
 ) {
     val hash: String
         get() = calculateHash()

@@ -1,8 +1,7 @@
 package com.trivaris.votechain
 
-import com.trivaris.votechain.blockchain.Block
-import com.trivaris.votechain.blockchain.BlockManager
-import com.trivaris.votechain.blockchain.BlockStorage
+import com.trivaris.votechain.blockchain.BlockDatabaseManager
+import com.trivaris.votechain.blockchain.database.BlockObject
 import com.trivaris.votechain.blockchain.SerializableKeyPair
 import com.trivaris.votechain.networking.Message
 import com.trivaris.votechain.networking.MessageEnvelope
@@ -74,7 +73,7 @@ object Server {
     data class JoinData(
         val participants: MutableSet<String> = Server.participants,
         val currentVotes: MutableMap<String, String> = VotingManager.getCurrentVotes(),
-        val blocks: List<Block> = BlockStorage.longestChain()
+        val blocks: List<BlockObject> = BlockDatabaseManager.longestChain()
     )
 
     init {

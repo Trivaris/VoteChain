@@ -2,7 +2,7 @@
     "difficulty": 3,
     "printHashCalc": true,
     "keypairAmount": 10,
-    "serverIP": "192.168.178.70",
+    "serverIP": "192.168.178.161",
     "debugMode": true,
     "isServer": true,
     "showLogLevels": true

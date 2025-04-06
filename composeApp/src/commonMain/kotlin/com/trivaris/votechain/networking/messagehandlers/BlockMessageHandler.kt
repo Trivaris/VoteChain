@@ -1,8 +1,8 @@
 package com.trivaris.votechain.networking.messagehandlers
 
 import com.trivaris.votechain.Logger
-import com.trivaris.votechain.blockchain.Block
-import com.trivaris.votechain.blockchain.BlockManager
+import com.trivaris.votechain.blockchain.database.BlockObject
+import com.trivaris.votechain.blockchain.BlockDatabaseManager
 import com.trivaris.votechain.networking.MessageEnvelope
 import com.trivaris.votechain.networking.Networking
 import kotlinx.coroutines.CoroutineScope
@@ -20,9 +20,9 @@ class BlockMessageHandler : MessageHandler {
     }
     override fun incoming(envelope: MessageEnvelope) {
         val message = envelope.message
-        val block = Json.decodeFromString<Block>(message.data)
+        val block = Json.decodeFromString<BlockObject>(message.data)
 
         Logger.PEER.log("Received block: ${block.hash}")
-        BlockManager.newBlock(block)
+        BlockDatabaseManager.newBlock(block)
     }
 }

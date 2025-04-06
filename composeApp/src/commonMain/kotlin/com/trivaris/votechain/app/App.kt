@@ -37,7 +37,7 @@ import com.trivaris.votechain.app.votingview.JoinRequestButton
 import com.trivaris.votechain.app.votingview.KeysRequestButton
 import com.trivaris.votechain.app.votingview.LeaveRequestButton
 import com.trivaris.votechain.app.votingview.Voting
-import com.trivaris.votechain.blockchain.BlockStorage
+import com.trivaris.votechain.blockchain.BlockDatabaseManager
 import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.voting.VotingManager
 
@@ -71,7 +71,7 @@ private fun TopBar(onSettingsClick: () -> Unit, onGraphClick: () -> Unit) {
             IconButton(onClick = {
                 Logger.DEBUG.log("Resetting Settings")
                 NetworkManager.clearParticipants()
-                BlockStorage.clear()
+                BlockDatabaseManager.clearDatabase()
                 VotingManager.clearCurrentVotes()
             }) {
                 Icon(Icons.Default.Refresh, contentDescription = "Reset", tint = Color.White)

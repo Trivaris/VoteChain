@@ -1,0 +1,17 @@
+CREATE TABLE block (
+  hash TEXT PRIMARY KEY,
+  votes TEXT NOT NULL,
+  previous_hash TEXT NOT NULL,
+  timestamp INTEGER NOT NULL,
+  nonce INTEGER NOT NULL
+);
+
+selectAll:
+SELECT * FROM block;
+
+insertBlock:
+INSERT INTO block(hash, votes, previous_hash, timestamp, nonce)
+VALUES (?, ?, ?, ?, ?);
+
+dropAll:
+DELETE FROM block;

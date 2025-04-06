@@ -4,11 +4,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.android.application) 
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.compose.compiler) 
+    alias(libs.plugins.kotlin.multiplatform) 
+    alias(libs.plugins.kotlin.serialization) 
+    alias(libs.plugins.sqldelight.plugin) 
 }
 
 java {
@@ -38,48 +39,54 @@ kotlin {
     jvm("desktop")
 
     sourceSets {
-        val desktopMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(compose.ui)
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
 
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.google.zxing.embedded)
-            implementation(libs.jai.imageio.core)
-        }
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.stdlib)
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.runtime.compose)
 
-            implementation(libs.jai.imageio.core)
-            implementation(libs.kotlinx.serialization)
-            implementation(libs.google.zxing.core)
-            implementation(libs.google.zxing.javase)
+                implementation(libs.kotlin.stdlib)
+                implementation(libs.kotlin.reflect)
+                implementation(libs.kotlinx.serialization.json)
 
-            implementation(libs.kotlin.reflect)
+                implementation(libs.jai.imageio.core)
 
-            implementation(libs.exposed.core)
-            implementation(libs.exposed.dao)
-            implementation(libs.exposed.jdbc)
-            implementation(libs.sqlite.jdbc)
-            implementation("org.sqldroid:sqldroid:1.0.3") {
-                exclude(group = "org.xerial", module = "sqlite-jdbc")
+                implementation(libs.zxing.core)
+                implementation(libs.zxing.javase)
+
+                implementation(libs.sqldelight.runtime)
             }
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
+
+        val androidMain by getting {
+            dependencies {
+                implementation(compose.preview)
+
+                implementation(libs.androidx.activity.compose)
+
+                implementation(libs.zxing.android.embedded)
+                implementation(libs.jai.imageio.core)
+
+                implementation(libs.sqldelight.driver.android)
+            }
+        }
+
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+
+                implementation(libs.kotlinx.coroutines.swing)
+                implementation(libs.sqldelight.driver.desktop)
+            }
         }
     }
-    sourceSets.commonMain.dependencies {
-        implementation(kotlin("reflect"))
-    }
+
 }
 
 android {
@@ -124,6 +131,9 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+    lint {
+        checkReleaseBuilds = false
+    }
 }
 
 dependencies {
@@ -164,4 +174,12 @@ tasks.withType<Jar> {
 
 tasks.withType<KotlinCompile> {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
+}
+
+sqldelight {
+    databases {
+        create("BlockDatabase") {
+            packageName.set("com.trivaris.votechain")
+        }
+    }
 }

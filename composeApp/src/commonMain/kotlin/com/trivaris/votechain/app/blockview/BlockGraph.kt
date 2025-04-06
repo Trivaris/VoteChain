@@ -13,11 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.trivaris.votechain.blockchain.Block
-import com.trivaris.votechain.blockchain.BlockStorage
+import com.trivaris.votechain.blockchain.database.BlockObject
 import com.trivaris.votechain.Config
 import com.trivaris.votechain.Logger
 import com.trivaris.votechain.app.Logo
+import com.trivaris.votechain.blockchain.BlockDatabaseManager
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -27,7 +27,7 @@ val sdf = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
 @Composable
 fun BlockGraph() {
     Logger.DEBUG.log("Starting BlockGraph")
-    val blocks = BlockStorage.getBlocks().values.toList()
+    val blocks = BlockDatabaseManager.getBlocks().values.toList()
 
     Spacer(modifier = Modifier.height(48.dp))
 
@@ -44,7 +44,7 @@ fun BlockGraph() {
     }
 }
 @Composable
-fun Block(block: Block) {
+fun Block(block: BlockObject) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
