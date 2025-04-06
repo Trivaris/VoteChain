@@ -12,8 +12,10 @@ import kotlinx.coroutines.launch
 class JoinRequestMessageHandler : MessageHandler {
     override fun outgoing(envelope: MessageEnvelope) {
         Logger.PEER.log("Started Listening", "Sent Request to join Network")
-        CoroutineScope(Dispatchers.IO).launch { Networking.startServer() }
-        CoroutineScope(Dispatchers.IO).launch { Networking.send(envelope) }
+        CoroutineScope(Dispatchers.IO).launch {
+            Networking.startServer()
+            Networking.send(envelope)
+        }
     }
     override fun incoming(envelope: MessageEnvelope) {
         if (!Config.data.isServer) return

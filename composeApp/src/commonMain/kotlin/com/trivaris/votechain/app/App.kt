@@ -43,7 +43,7 @@ import com.trivaris.votechain.voting.VotingManager
 
 @Composable
 fun App(
-    LoadKeysButton: @Composable () -> Unit,
+    loadKeysButton: @Composable () -> Unit,
     onVoteFailed: () -> Unit = {},
     onSettingsSaved: () -> Unit = {}
 ) {
@@ -55,7 +55,7 @@ fun App(
             onGraphClick = { currentScreen = toggleScreen(currentScreen, Screen.BLOCKS_GRAPH) }
         )
         Spacer(modifier = Modifier.height(24.dp))
-        ContentArea(currentScreen, LoadKeysButton, onVoteFailed, onSettingsSaved)
+        ContentArea(currentScreen, loadKeysButton, onVoteFailed, onSettingsSaved)
     }
 }
 
@@ -88,7 +88,7 @@ private fun TopBar(onSettingsClick: () -> Unit, onGraphClick: () -> Unit) {
 @Composable
 private fun ContentArea(
     screen: Screen,
-    LoadKeysButton: @Composable () -> Unit = {},
+    loadKeysButton: @Composable () -> Unit = {},
     onVoteFailed: () -> Unit = {},
     onSettingsSaved: () -> Unit = {}
 ) {
@@ -102,21 +102,21 @@ private fun ContentArea(
                 onSettingsSaved()
             }
             Screen.BLOCKS_GRAPH -> BlockGraph()
-            else -> MainContent(LoadKeysButton, onVoteFailed)
+            else -> MainContent(loadKeysButton, onVoteFailed)
         }
     }
 }
 
 @Composable
 private fun MainContent(
-    LoadKeysButton: @Composable () -> Unit = {},
+    loadKeysButton: @Composable () -> Unit = {},
     onVoteFailed: () -> Unit = {}
 ) {
 
     Voting {
         onVoteFailed()
     }
-    if (!Config.data.debugMode) LoadKeysButton()
+    if (!Config.data.debugMode) loadKeysButton()
     else DebugKeypairSelector()
     Column {
         if (Config.data.debugMode)
@@ -126,7 +126,7 @@ private fun MainContent(
             }
         Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
             BlockMineButton()
-            KeysRequestButton()
+            if(Config.data.debugMode) KeysRequestButton()
         }
     }
     CandidateVotes()

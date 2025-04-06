@@ -22,5 +22,4 @@ data class Message(
         type = MessageType.BLOCK,
         data = Json.encodeToString(block)
     )
-
 }

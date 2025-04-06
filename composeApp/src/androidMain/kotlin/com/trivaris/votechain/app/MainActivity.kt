@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
 import com.journeyapps.barcodescanner.ScanContract
 import com.trivaris.votechain.Config
+import com.trivaris.votechain.Logger
 import com.trivaris.votechain.blockchain.BlockDatabaseManager
 import com.trivaris.votechain.blockchain.SerializableKeyPair
 import com.trivaris.votechain.blockchain.database.DriverFactory
@@ -39,13 +40,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Config.isAndroid = true
+
         val configJson = initializeConfig(this)
         val configFile = File(this.filesDir, "config.json")
 
+        Config.data.printHashCalc = false
+
         Config.setFile(configFile)
         Config.setSource(configJson)
-        Config.data.showLogLevels = false
-        Config.data.printHashCalc = false
+
 
         val driverFactory = DriverFactory(this)
         BlockDatabaseManager.initDatabase(driverFactory)
@@ -56,7 +60,7 @@ class MainActivity : ComponentActivity() {
             val context = LocalContext.current
             StdOutToastListener(context)
             App(
-                LoadKeysButton = { QRScannerButton(barcodeLauncher) },
+                loadKeysButton = { QRScannerButton(barcodeLauncher) },
                 onSettingsSaved = {
                     Toast.makeText(context, "Saved Settings!", Toast.LENGTH_LONG).show()
                 },
@@ -71,11 +75,8 @@ class MainActivity : ComponentActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val localIp = getLocalIpAddress()
             withContext(Dispatchers.Main) {
-                val message = if (localIp.isEmpty()) "Did not find local IP..." else "Found local IP: $localIp"
-                Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
-                if (localIp.isNotEmpty()) {
+                if (localIp.isNotEmpty())
                     NetworkManager.join(localIp)
-                }
             }
         }
     }

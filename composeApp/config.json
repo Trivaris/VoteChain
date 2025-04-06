@@ -1,9 +1,8 @@
 {
     "difficulty": 3,
     "keypairAmount": 10,
-    "serverIP": "192.168.178.161",
+    "serverIP": "192.168.178.70",
     "printHashCalc": true,
     "debugMode": true,
-    "isServer": true,
-    "showLogLevels": true
+    "isServer": true
 }

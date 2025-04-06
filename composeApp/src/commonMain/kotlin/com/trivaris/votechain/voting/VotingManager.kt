@@ -40,7 +40,10 @@ object VotingManager {
     }
     fun getCurrentVotes(): MutableMap<String, String> = currentVotes.toMutableMap()
     fun removeFromCurrentVotes(toRemove: MutableMap<String, String>) = currentVotes.keys.removeAll(toRemove.keys)
-    fun clearCurrentVotes() = currentVotes.clear()
+    fun clearCurrentVotes() {
+        Logger.DEBUG.log("Clearing Current Votes")
+        currentVotes.clear()
+    }
 
     fun makeVote(): SerializableVote? {
         return keypair?.let { kp ->

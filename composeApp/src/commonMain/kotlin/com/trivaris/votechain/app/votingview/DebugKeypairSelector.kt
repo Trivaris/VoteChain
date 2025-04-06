@@ -32,7 +32,7 @@ fun DebugKeypairSelector() {
         }
         Spacer(modifier = Modifier.width(8.dp))
         Button(onClick = {
-            Logger.INFO.log("Selected keypair: ${selectedNumber.value}")
+            Logger.DEBUG.log("Selected keypair: ${selectedNumber.value}")
             VotingManager.setKeypair(debugKeypairs[selectedNumber.value - 1])
         }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green)) { Text("Set Debug Keypair") }
     }

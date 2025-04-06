@@ -26,7 +26,7 @@ fun main() {
     application {
         Window(
             onCloseRequest = ::exitApplication,
-            title = "VoteChain Rewrite",
+            title = "VoteChain",
             icon = painterResource(Res.drawable.icon_round)
         ) {
             App({ KeyFileLoader() })

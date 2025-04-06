@@ -37,7 +37,6 @@ fun StdOutToastListener(context: Context) {
         }
         System.setOut(PrintStream(interceptor, true))
         onDispose {
-            // Restore default if needed
             System.setOut(PrintStream(FileOutputStream(FileDescriptor.out)))
         }
     }

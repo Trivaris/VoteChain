@@ -47,8 +47,10 @@ object NetworkManager {
         participants = new
     }
 
-    fun clearParticipants() =
+    fun clearParticipants() {
+        Logger.DEBUG.log("Clearing Participants")
         participants.clear()
+    }
 
     fun participantJoined(address: String) =
         participants.add(address)

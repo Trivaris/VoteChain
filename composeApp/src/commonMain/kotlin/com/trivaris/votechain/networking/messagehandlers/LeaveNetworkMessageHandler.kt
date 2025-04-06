@@ -11,8 +11,10 @@ import kotlinx.coroutines.launch
 class LeaveNetworkMessageHandler : MessageHandler {
     override fun outgoing(envelope: MessageEnvelope) {
         Logger.PEER.log("Sent Request to leave Network", "Stopped Listening" )
-        CoroutineScope(Dispatchers.IO).launch { Networking.send(envelope) }
-        CoroutineScope(Dispatchers.IO).launch { Networking.stopServer() }
+        CoroutineScope(Dispatchers.IO).launch {
+            Networking.send(envelope)
+            Networking.stopServer()
+        }
     }
     override fun incoming(envelope: MessageEnvelope) {
         val address = envelope.originator

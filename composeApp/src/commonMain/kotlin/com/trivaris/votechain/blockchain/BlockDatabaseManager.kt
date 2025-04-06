@@ -65,8 +65,10 @@ object BlockDatabaseManager {
         return chains.maxByOrNull { it.size } ?: emptyList()
     }
 
-    fun clearDatabase() =
+    fun clearDatabase() {
+        Logger.DEBUG.log("Clearing Database")
         database.dropAll()
+    }
 
     private fun addBlock(block: BlockObject) =
         database.insertBlock(block)

@@ -13,13 +13,13 @@ data class ConfigData(
     var receivingPort: Int = 9235,
     var printHashCalc: Boolean,
     var debugMode: Boolean,
-    var isServer: Boolean,
-    var showLogLevels: Boolean
+    var isServer: Boolean
 )
 
 object Config {
     private val json = Json { prettyPrint = true }
     private var file = File("config.json")
+    var isAndroid = false
     var data: ConfigData =
         ConfigData(
             difficulty = 3,
@@ -28,7 +28,6 @@ object Config {
             serverIP = "192.168.178.70",
             debugMode = true,
             isServer = false,
-            showLogLevels = true
         )
 
     fun setFile(new: File) {
@@ -45,9 +44,9 @@ object Config {
     fun save() {
         try {
             file.writeText(json.encodeToString(data))
-            Logger.CONFIG.log("\n" + file.readText())
+            Logger.CONFIG.log("\n" + file.readText(), showOnAndroid = false)
         } catch (e: Exception) {
-            Logger.CONFIG.log("Error saving config", e.message.toString())
+            Logger.CONFIG.log("Error saving config:", e.message.toString())
         }
     }
 

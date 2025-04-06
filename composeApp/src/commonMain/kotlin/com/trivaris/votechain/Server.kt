@@ -52,7 +52,6 @@ object Server {
 
     fun joinResponse(requester: String) {
         participants.forEach {
-            Logger.SERVER.log("Current participant: $it")
             val newParticipantMessage = Message(MessageType.NEW_PARTICIPANT, requester)
             val newParticipantEnvelope = MessageEnvelope(newParticipantMessage, it)
             MessageManager.outgoing(newParticipantEnvelope)
@@ -62,7 +61,7 @@ object Server {
         Logger.log(Logger.SERVER, Logger.DEBUG, message = "New participants: $participants")
 
         val data = JoinData()
-        Logger.INFO.log("Sending data:", json.encodeToString(data))
+        Logger.SERVER.log("Sending info:", "Participants: ${data.participants}", "Blocks: ${data.blocks.size}", "Current Votes: ${data.currentVotes.size}", showOnAndroid = false)
         val message = Message(MessageType.JOIN_RESPONSE, json.encodeToString(data))
         val envelope = MessageEnvelope(message, requester)
 

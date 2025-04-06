@@ -11,7 +11,7 @@ import java.net.Socket
 import java.net.SocketException
 
 object Networking {
-    private var serverSocket: ServerSocket = ServerSocket(Config.data.receivingPort).apply { close() }
+    private var serverSocket = ServerSocket(Config.data.receivingPort).apply { close() }
     private val scope = CoroutineScope(Dispatchers.IO)
 
     fun startServer() {
@@ -21,6 +21,7 @@ object Networking {
                 return
             }
             serverSocket = ServerSocket(Config.data.receivingPort)
+            Logger.NETWORK.log("Server is running: ${!serverSocket.isClosed}")
         }
 
         Logger.NETWORK.log("Starting server on port ${Config.data.receivingPort}...")
@@ -31,11 +32,12 @@ object Networking {
                     val input = client.inputStream
                     val data = input.readBytes().decodeToString()
                     val envelope = Json.decodeFromString<MessageEnvelope>(data)
+                    envelope.originator = client.inetAddress.hostAddress
 
                     MessageManager.incoming(envelope)
                 }
-            } catch (_: Exception) {
-                Logger.NETWORK.log("Server closed")
+            } catch (e: Exception) {
+                Logger.NETWORK.log("There was an Error in Receiving: ${e.message}")
             }
         }
     }
@@ -59,8 +61,8 @@ object Networking {
                 output.write(Json.encodeToString(envelope).toByteArray())
                 output.flush()
                 socket.close()
-            } catch (_: Exception) {
-                Logger.NETWORK.log("Did not send ${envelope.message.type}, server is not running")
+            } catch (e: Exception) {
+                Logger.NETWORK.log("There was an Error in Sending: ${e.message}")
             }
         }
     }

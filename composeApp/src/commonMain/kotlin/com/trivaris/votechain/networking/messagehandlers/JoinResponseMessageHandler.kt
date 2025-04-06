@@ -32,7 +32,8 @@ class JoinResponseMessageHandler : MessageHandler {
         val dataJson = message.data
         val data = Json.decodeFromString<Server.JoinData>(dataJson)
 
-        Logger.PEER.log("Received info from Server", data.participants, "Blocks: ${data.blocks.size}", "Current Votes: ${data.currentVotes.size}")
+        if (Config.isAndroid) Logger.PEER.log("Received Info")
+        Logger.PEER.log("Received info:", data.participants, "Blocks: ${data.blocks.size}", "Current Votes: ${data.currentVotes.size}", showOnAndroid = false)
         NetworkManager.setParticipants(data.participants)
         VotingManager.setCurrentVotes(data.currentVotes)
         BlockDatabaseManager.setBlocks(data.blocks)
