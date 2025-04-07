@@ -1,0 +1,18 @@
+CREATE TABLE participant (
+  id      INTEGER PRIMARY KEY AUTOINCREMENT,
+  address TEXT,
+  port    TEXT
+);
+
+getAll:
+SELECT * FROM participant;
+
+getById:
+SELECT * FROM block WHERE id = ?;
+
+insert:
+INSERT INTO participant(address, port)
+VALUES (?, ?);
+
+clear:
+DELETE FROM participant;

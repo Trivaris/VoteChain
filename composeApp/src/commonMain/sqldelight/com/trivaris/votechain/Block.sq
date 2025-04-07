@@ -1,13 +1,17 @@
 CREATE TABLE block (
-  hash TEXT PRIMARY KEY,
-  votes TEXT NOT NULL,
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  hash          TEXT NOT NULL,
+  votes         TEXT NOT NULL,
   previous_hash TEXT NOT NULL,
-  timestamp INTEGER NOT NULL,
-  nonce INTEGER NOT NULL
+  timestamp     INTEGER NOT NULL,
+  nonce         INTEGER NOT NULL
 );
 
 getAll:
 SELECT * FROM block;
+
+getById:
+SELECT * FROM block WHERE id = ?;
 
 insert:
 INSERT INTO block(hash, votes, previous_hash, timestamp, nonce)
@@ -15,3 +19,11 @@ VALUES (?, ?, ?, ?, ?);
 
 clear:
 DELETE FROM block;
+
+-- Origin Block:  id 2
+-- Unmined Block: id 1
+
+updateCurrentVotes:
+UPDATE block
+SET votes = ?
+WHERE id = 1;

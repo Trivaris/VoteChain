@@ -1,19 +1,21 @@
 CREATE TABLE candidate (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  firstname TEXT,
-  lastname TEXT NOT NULL,
-  biography TEXT NOT NULL,
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  firstname  TEXT NOT NULL,
+  lastname   TEXT NOT NULL,
   profession TEXT NOT NULL,
-  affiliation TEXT,
-  birthdate INTEGER NOT NULL
+  bio        TEXT NOT NULL,
+  birthdate  INTEGER NOT NULL
 );
 
 getAll:
 SELECT * FROM candidate;
 
+getById:
+SELECT * FROM block WHERE id = ?;
+
 insert:
-INSERT INTO candidate(firstname, lastname, biography, profession, affiliation, birthdate)
-VALUES (?, ?, ?, ?, ?, ?);
+INSERT INTO candidate(firstname, lastname, profession, birthdate, bio)
+VALUES (?, ?, ?, ?, ?);
 
 clear:
 DELETE FROM candidate;

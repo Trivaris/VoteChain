@@ -12,4 +12,3 @@ enum class Candidate {
     val readableName: String
         get() = name.lowercase().split("_").joinToString(" ") { it.replaceFirstChar { it.uppercase() } }
 }
-

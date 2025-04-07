@@ -5,7 +5,7 @@ import com.trivaris.votechain.Logger
 import com.trivaris.votechain.networking.MessageEnvelope
 import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.networking.Networking
-import com.trivaris.votechain.voting.SerializableVote
+import com.trivaris.votechain.voting.Vote
 import com.trivaris.votechain.voting.VotingManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +21,7 @@ class VoteMessageHandler : MessageHandler {
     }
     override fun incoming(envelope: MessageEnvelope) {
         val message = envelope.message
-        val vote = Config.json.decodeFromString<SerializableVote>(message.data)
+        val vote = Config.json.decodeFromString<Vote>(message.data)
 
         VotingManager.interpretVote(vote)
         if (VotingManager.isDecryptionMapEmpty) {

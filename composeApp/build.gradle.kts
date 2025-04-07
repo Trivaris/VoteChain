@@ -142,7 +142,7 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.trivaris.votechain.app.MainKt"
+        mainClass = "com.trivaris.votechain.view.MainKt"
 
         nativeDistributions {
             windows {
@@ -168,7 +168,7 @@ compose.resources {
 
 tasks.withType<Jar> {
     manifest {
-        attributes["Main-Class"] = "com.trivaris.votechain.app.MainKt"
+        attributes["Main-Class"] = "com.trivaris.votechain.view.MainKt"
     }
 }
 

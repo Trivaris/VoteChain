@@ -8,6 +8,9 @@ CREATE TABLE position (
 getAll:
 SELECT * FROM position;
 
+getById:
+SELECT * FROM block WHERE id = ?;
+
 insert:
 INSERT INTO position(name, summary, appliedCandidates)
 VALUES (?, ?, ?);

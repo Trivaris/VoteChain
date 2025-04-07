@@ -1,0 +1,19 @@
+CREATE TABLE role (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  name       TEXT NOT NULL ,
+  candidates TEXT NOT NULL,
+  summary    TEXT NOT NULL
+);
+
+getAll:
+SELECT * FROM role;
+
+getById:
+SELECT * FROM block WHERE id = ?;
+
+insert:
+INSERT INTO role(name, candidates, summary)
+VALUES (?, ?, ?);
+
+clear:
+DELETE FROM role;

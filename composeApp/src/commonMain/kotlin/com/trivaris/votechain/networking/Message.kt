@@ -1,8 +1,8 @@
 package com.trivaris.votechain.networking
 
-import com.trivaris.votechain.store.block.BlockObject
+import com.trivaris.votechain.model.block.BlockObject
 import com.trivaris.votechain.networking.messagehandlers.MessageType
-import com.trivaris.votechain.voting.SerializableVote
+import com.trivaris.votechain.voting.Vote
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.String
@@ -13,7 +13,7 @@ data class Message(
     val data: String = ""
 ) {
 
-    constructor(vote: SerializableVote) : this(
+    constructor(vote: Vote) : this(
         type = MessageType.VOTE,
         data = Json.encodeToString(vote)
     )

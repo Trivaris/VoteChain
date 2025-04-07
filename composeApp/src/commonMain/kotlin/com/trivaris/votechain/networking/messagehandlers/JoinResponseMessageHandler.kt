@@ -3,7 +3,7 @@ package com.trivaris.votechain.networking.messagehandlers
 import com.trivaris.votechain.Config
 import com.trivaris.votechain.Logger
 import com.trivaris.votechain.Server
-import com.trivaris.votechain.store.block.BlockRepository
+import com.trivaris.votechain.model.block.BlockRepository
 import com.trivaris.votechain.networking.MessageEnvelope
 import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.networking.Networking
@@ -32,10 +32,9 @@ class JoinResponseMessageHandler : MessageHandler {
         val data = Config.json.decodeFromString<Server.JoinData>(dataJson)
 
         if (Config.isAndroid) Logger.PEER.log("Received Info")
-        Logger.PEER.log("Received info:", data.participants, "Blocks: ${data.blocks.size}", "Current Votes: ${data.currentVotes.size}", showOnAndroid = false)
+        data.print()
         NetworkManager.setParticipants(data.participants)
-        VotingManager.setCurrentVotes(data.currentVotes)
-        BlockRepository.setBlocks(data.blocks)
+        BlockRepository.repopulate(data.blocks)
 
         NetworkManager.requestKeys()
     }

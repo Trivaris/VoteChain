@@ -1,13 +1,14 @@
 package com.trivaris.votechain
 
-import com.trivaris.votechain.store.block.BlockRepository
-import com.trivaris.votechain.store.block.BlockObject
-import com.trivaris.votechain.blockchain.SerializableKeyPair
+import androidx.compose.ui.util.fastFirst
+import com.trivaris.votechain.model.block.BlockRepository
+import com.trivaris.votechain.model.block.BlockObject
+import com.trivaris.votechain.networking.SerializableKeyPair
 import com.trivaris.votechain.networking.Message
 import com.trivaris.votechain.networking.MessageEnvelope
 import com.trivaris.votechain.networking.MessageManager
 import com.trivaris.votechain.networking.messagehandlers.MessageType
-import com.trivaris.votechain.voting.VotingManager
+import com.trivaris.votechain.voting.Vote
 import kotlinx.serialization.Serializable
 import java.io.File
 import java.security.KeyPair
@@ -56,7 +57,8 @@ object Server {
         Logger.log(Logger.SERVER, Logger.DEBUG, message = "New participants: $participants")
 
         val data = JoinData()
-        Logger.SERVER.log("Sending info:", "Participants: ${data.participants}", "Blocks: ${data.blocks.size}", "Current Votes: ${data.currentVotes.size}", showOnAndroid = false)
+        data.print()
+
         val message = Message(MessageType.JOIN_RESPONSE, Config.json.encodeToString(data))
         val envelope = MessageEnvelope(message, requester)
 
@@ -66,9 +68,17 @@ object Server {
     @Serializable
     data class JoinData(
         val participants: MutableSet<String> = Server.participants,
-        val currentVotes: MutableMap<String, String> = VotingManager.getCurrentVotes(),
         val blocks: List<BlockObject> = BlockRepository.longestChain()
-    )
+    ) {
+        fun print() {
+            Logger.INFO.log(
+                "Join Data:",
+                "Participants: $participants",
+                "Blocks: ${blocks.size}",
+                showOnAndroid = false
+            )
+        }
+    }
 
     init {
         if (Config.data.isServer) {

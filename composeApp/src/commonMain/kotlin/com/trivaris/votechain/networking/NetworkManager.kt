@@ -1,9 +1,9 @@
 package com.trivaris.votechain.networking
 
 import com.trivaris.votechain.Logger
-import com.trivaris.votechain.store.block.BlockObject
+import com.trivaris.votechain.model.block.BlockObject
 import com.trivaris.votechain.networking.messagehandlers.MessageType
-import com.trivaris.votechain.voting.SerializableVote
+import com.trivaris.votechain.voting.Vote
 
 object NetworkManager {
     private var participants = mutableSetOf<String>()
@@ -31,7 +31,7 @@ object NetworkManager {
 
     fun broadcast(block: BlockObject) =
         broadcast(Message(block))
-    fun broadcast(vote: SerializableVote) =
+    fun broadcast(vote: Vote) =
         broadcast(Message(vote))
 
     private fun broadcast(message: Message) {
