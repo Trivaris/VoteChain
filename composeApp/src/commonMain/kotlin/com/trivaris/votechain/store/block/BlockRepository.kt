@@ -1,36 +1,34 @@
-package com.trivaris.votechain.blockchain
+package com.trivaris.votechain.store.block
 
 import com.trivaris.votechain.BlockDatabase
+import com.trivaris.votechain.Config
 import com.trivaris.votechain.Logger
-import com.trivaris.votechain.blockchain.database.BlockObject
-import com.trivaris.votechain.blockchain.database.DriverFactory
-import com.trivaris.votechain.blockchain.database.dropAll
-import com.trivaris.votechain.blockchain.database.getAllBlocks
-import com.trivaris.votechain.blockchain.database.insertBlock
+import com.trivaris.votechain.store.DriverFactory
 import com.trivaris.votechain.voting.VotingManager
 
-object BlockDatabaseManager {
+object BlockRepository {
     private lateinit var database: BlockDatabase
 
     fun makeNewestBlock(): BlockObject =
         BlockObject(VotingManager.getCurrentVotes(), latestHash()).apply { mine() }
 
-    fun newBlock(block: BlockObject) {
+    fun addBlock(block: BlockObject) {
         if (block.validity() == null) {
             Logger.PEER.log("Adding valid Block")
             VotingManager.removeFromCurrentVotes(block.votes)
-            addBlock(block)
-        }
-        else Logger.PEER.log("Block was invalid")
+            insert(block)
+        } else Logger.PEER.log("Block was invalid")
     }
 
     fun getBlocks(): Map<String, BlockObject> =
-        database.getAllBlocks()
+        database.blockQueries.getAll()
+            .executeAsList()
+            .associate { row -> row.hash to BlockObject(row) }
 
     fun setBlocks(blocks: List<BlockObject>) {
-        database.dropAll()
+        clear()
         blocks.forEach { block ->
-            database.insertBlock(block)
+            insert(block)
         }
     }
 
@@ -65,13 +63,19 @@ object BlockDatabaseManager {
         return chains.maxByOrNull { it.size } ?: emptyList()
     }
 
-    fun clearDatabase() {
+    fun clear() {
         Logger.DEBUG.log("Clearing Database")
-        database.dropAll()
+        database.blockQueries.clear()
     }
 
-    private fun addBlock(block: BlockObject) =
-        database.insertBlock(block)
+    private fun insert(block: BlockObject) =
+        database.blockQueries.insert(
+            block.hash,
+            Config.json.encodeToString(block.votes),
+            block.previousHash,
+            block.timestamp,
+            block.nonce
+        )
 
     fun initDatabase(driverFactory: DriverFactory){
         val driver = driverFactory.createDriver()

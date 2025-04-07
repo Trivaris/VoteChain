@@ -6,12 +6,12 @@ CREATE TABLE block (
   nonce INTEGER NOT NULL
 );
 
-selectAll:
+getAll:
 SELECT * FROM block;
 
-insertBlock:
+insert:
 INSERT INTO block(hash, votes, previous_hash, timestamp, nonce)
 VALUES (?, ?, ?, ?, ?);
 
-dropAll:
+clear:
 DELETE FROM block;

@@ -4,8 +4,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.trivaris.votechain.Config
 import com.trivaris.votechain.app.votingview.KeyFileLoader
-import com.trivaris.votechain.blockchain.BlockDatabaseManager
-import com.trivaris.votechain.blockchain.database.DriverFactory
+import com.trivaris.votechain.store.block.BlockRepository
+import com.trivaris.votechain.store.DriverFactory
 import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.resources.Res
 import com.trivaris.votechain.resources.icon_round
@@ -19,7 +19,7 @@ fun main() {
     Config.setSource(getConfigJson())
 
     val driverFactory = DriverFactory()
-    BlockDatabaseManager.initDatabase(driverFactory)
+    BlockRepository.initDatabase(driverFactory)
 
     NetworkManager.join(InetAddress.getLocalHost().hostAddress)
 

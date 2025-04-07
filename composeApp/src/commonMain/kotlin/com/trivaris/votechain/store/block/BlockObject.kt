@@ -1,5 +1,6 @@
-package com.trivaris.votechain.blockchain.database
+package com.trivaris.votechain.store.block
 
+import com.trivaris.votechain.Block
 import com.trivaris.votechain.Config
 import com.trivaris.votechain.Logger
 import com.trivaris.votechain.applySha256
@@ -14,6 +15,12 @@ open class BlockObject(
     val timestamp: Long = Date().time,
     var nonce: Long = 0,
 ) {
+    constructor(block: Block) : this(
+        votes =  Config.json.decodeFromString(block.votes),
+        previousHash = block.previous_hash,
+        timestamp = block.timestamp,
+        nonce = block.nonce
+    )
     val hash: String
         get() = Config.json.encodeToString(this).applySha256()
 

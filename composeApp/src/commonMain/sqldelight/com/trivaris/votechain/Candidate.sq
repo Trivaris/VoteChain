@@ -1,0 +1,19 @@
+CREATE TABLE candidate (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  firstname TEXT,
+  lastname TEXT NOT NULL,
+  biography TEXT NOT NULL,
+  profession TEXT NOT NULL,
+  affiliation TEXT,
+  birthdate INTEGER NOT NULL
+);
+
+getAll:
+SELECT * FROM candidate;
+
+insert:
+INSERT INTO candidate(firstname, lastname, biography, profession, affiliation, birthdate)
+VALUES (?, ?, ?, ?, ?, ?);
+
+clear:
+DELETE FROM candidate;

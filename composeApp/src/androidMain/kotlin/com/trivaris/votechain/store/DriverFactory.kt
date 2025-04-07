@@ -1,4 +1,4 @@
-package com.trivaris.votechain.blockchain.database
+package com.trivaris.votechain.store
 
 import android.content.Context
 import app.cash.sqldelight.db.SqlDriver

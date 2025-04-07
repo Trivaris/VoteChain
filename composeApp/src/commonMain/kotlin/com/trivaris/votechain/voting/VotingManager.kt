@@ -5,7 +5,7 @@ import com.trivaris.votechain.Cryptography
 import com.trivaris.votechain.Logger
 import com.trivaris.votechain.applySha256
 import com.trivaris.votechain.asString
-import com.trivaris.votechain.blockchain.BlockDatabaseManager
+import com.trivaris.votechain.store.block.BlockRepository
 import java.security.KeyPair
 
 object VotingManager {
@@ -54,7 +54,7 @@ object VotingManager {
 
     private fun allVotes(): MutableMap<String, String> =
         mutableMapOf<String, String>().apply {
-            BlockDatabaseManager.longestChain().forEach { block ->
+            BlockRepository.longestChain().forEach { block ->
                 block.votes.forEach { (key, value) ->
                     putIfAbsent(key, value)
                 }

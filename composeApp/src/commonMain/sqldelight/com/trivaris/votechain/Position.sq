@@ -1,0 +1,16 @@
+CREATE TABLE position (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  summary TEXT NOT NULL,
+  appliedCandidates TEXT NOT NULL
+);
+
+getAll:
+SELECT * FROM position;
+
+insert:
+INSERT INTO position(name, summary, appliedCandidates)
+VALUES (?, ?, ?);
+
+clear:
+DELETE FROM position;

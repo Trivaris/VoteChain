@@ -5,7 +5,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.trivaris.votechain.blockchain.BlockDatabaseManager
+import com.trivaris.votechain.store.block.BlockRepository
 import com.trivaris.votechain.networking.NetworkManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +16,7 @@ fun BlockMineButton() {
     Button(
         onClick = {
             CoroutineScope(Dispatchers.IO).launch {
-                val block = BlockDatabaseManager.makeNewestBlock()
+                val block = BlockRepository.makeNewestBlock()
                 NetworkManager.broadcast(block)
             }
         },

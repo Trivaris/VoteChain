@@ -8,10 +8,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
 import com.journeyapps.barcodescanner.ScanContract
 import com.trivaris.votechain.Config
-import com.trivaris.votechain.Logger
-import com.trivaris.votechain.blockchain.BlockDatabaseManager
+import com.trivaris.votechain.store.block.BlockRepository
 import com.trivaris.votechain.blockchain.SerializableKeyPair
-import com.trivaris.votechain.blockchain.database.DriverFactory
+import com.trivaris.votechain.store.DriverFactory
 import com.trivaris.votechain.networking.NetworkManager
 import com.trivaris.votechain.voting.VotingManager
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +51,7 @@ class MainActivity : ComponentActivity() {
 
 
         val driverFactory = DriverFactory(this)
-        BlockDatabaseManager.initDatabase(driverFactory)
+        BlockRepository.initDatabase(driverFactory)
 
         fetchLocalIpAndJoinNetwork()
 
