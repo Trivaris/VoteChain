@@ -1,16 +1,19 @@
 package com.trivaris.votechain
 
+import java.math.BigInteger
 import java.security.KeyPair
 import java.security.KeyPairGenerator
+import java.security.MessageDigest
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.Signature
+import java.security.interfaces.RSAPublicKey
 import java.util.Base64
 
 object Cryptography {
-    const val KEY_SIZE = 2048
+    private const val KEY_SIZE = 2048
     const val ALGORITHM = "RSA"
-    const val SIGNATURE_ALGORITHM = "SHA256withRSA"
+    private const val SIGNATURE_ALGORITHM = "SHA256withRSA"
 
     fun generateKeyPair(): KeyPair {
         val keyGen = KeyPairGenerator.getInstance(ALGORITHM)
@@ -32,6 +35,22 @@ object Cryptography {
         signature.update(data.toByteArray())
         val signedBytes = Base64.getDecoder().decode(signatureStr)
         return signature.verify(signedBytes)
+    }
+
+    fun blindData(data: String, publicKey: PublicKey, blindingFactor: BigInteger): String {
+        val rsaPublic = publicKey as RSAPublicKey
+
+        val digest = MessageDigest.getInstance("SHA-1")
+        val hashBytes = digest.digest(data.toByteArray(Charsets.UTF_8))
+        val m = BigInteger(1, hashBytes)
+
+        val n = rsaPublic.modulus
+        val e = rsaPublic.publicExponent
+
+        val rPowE = blindingFactor.modPow(e, n)
+        val blinded = m.multiply(rPowE).mod(n)
+
+        return Base64.getEncoder().encodeToString(blinded.toByteArray())
     }
 
 }

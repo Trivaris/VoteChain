@@ -2,14 +2,12 @@ package com.trivaris.votechain.blockchain.database
 
 import com.trivaris.votechain.Block
 import com.trivaris.votechain.BlockDatabase
-import kotlinx.serialization.json.Json
-
-val json = Json() { encodeDefaults = true }
+import com.trivaris.votechain.Config
 
 fun BlockDatabase.insertBlock(block: BlockObject) {
     this.blockQueries.insertBlock(
         block.hash,
-        json.encodeToString(block.votes),
+        Config.json.encodeToString(block.votes),
         block.previousHash,
         block.timestamp,
         block.nonce
@@ -21,7 +19,7 @@ fun BlockDatabase.dropAll() {
 }
 
 fun Block.toBlockObject(): BlockObject {
-    val votesMap: MutableMap<String, String> = Json.decodeFromString(this.votes)
+    val votesMap: MutableMap<String, String> = Config.json.decodeFromString(this.votes)
     return BlockObject(
         votes = votesMap,
         previousHash = this.previous_hash,

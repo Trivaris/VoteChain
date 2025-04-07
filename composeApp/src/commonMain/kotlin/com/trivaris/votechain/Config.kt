@@ -17,7 +17,10 @@ data class ConfigData(
 )
 
 object Config {
-    private val json = Json { prettyPrint = true }
+    val json = Json {
+        prettyPrint = true
+        encodeDefaults = true
+    }
     private var file = File("config.json")
     var isAndroid = false
     var data: ConfigData =

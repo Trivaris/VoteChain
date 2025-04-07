@@ -15,12 +15,7 @@ open class BlockObject(
     var nonce: Long = 0,
 ) {
     val hash: String
-        get() = calculateHash()
-
-    private fun calculateHash(): String {
-        val toEncode = votes.toString() + previousHash + timestamp.toString() + nonce
-        return toEncode.applySha256()
-    }
+        get() = Config.json.encodeToString(this).applySha256()
 
     fun mine() {
         while (true) {

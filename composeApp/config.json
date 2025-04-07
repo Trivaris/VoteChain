@@ -2,7 +2,9 @@
     "difficulty": 3,
     "keypairAmount": 10,
     "serverIP": "192.168.178.70",
+    "serverPort": 9235,
+    "receivingPort": 9235,
     "printHashCalc": true,
-    "debugMode": true,
+    "debugMode": false,
     "isServer": true
 }

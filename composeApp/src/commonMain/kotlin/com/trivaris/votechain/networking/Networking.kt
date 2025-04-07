@@ -4,11 +4,8 @@ import com.trivaris.votechain.Config
 import com.trivaris.votechain.Logger
 import java.net.InetAddress
 import kotlinx.coroutines.*
-import kotlinx.serialization.json.Json
-import java.net.ConnectException
 import java.net.ServerSocket
 import java.net.Socket
-import java.net.SocketException
 
 object Networking {
     private var serverSocket = ServerSocket(Config.data.receivingPort).apply { close() }
@@ -31,7 +28,7 @@ object Networking {
                     val client = serverSocket.accept()
                     val input = client.inputStream
                     val data = input.readBytes().decodeToString()
-                    val envelope = Json.decodeFromString<MessageEnvelope>(data)
+                    val envelope = Config.json.decodeFromString<MessageEnvelope>(data)
                     envelope.originator = client.inetAddress.hostAddress
 
                     MessageManager.incoming(envelope)
@@ -58,7 +55,7 @@ object Networking {
                 val socket = Socket(address, Config.data.serverPort)
                 val output = socket.getOutputStream()
                 Logger.NETWORK.log("Sending ${envelope.message.type} to $address")
-                output.write(Json.encodeToString(envelope).toByteArray())
+                output.write(Config.json.encodeToString(envelope).toByteArray())
                 output.flush()
                 socket.close()
             } catch (e: Exception) {

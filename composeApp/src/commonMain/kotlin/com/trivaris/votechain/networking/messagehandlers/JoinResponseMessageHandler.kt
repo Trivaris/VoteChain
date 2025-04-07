@@ -11,7 +11,6 @@ import com.trivaris.votechain.voting.VotingManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import java.net.InetAddress
 
 class JoinResponseMessageHandler : MessageHandler {
@@ -30,7 +29,7 @@ class JoinResponseMessageHandler : MessageHandler {
 
         val message = envelope.message
         val dataJson = message.data
-        val data = Json.decodeFromString<Server.JoinData>(dataJson)
+        val data = Config.json.decodeFromString<Server.JoinData>(dataJson)
 
         if (Config.isAndroid) Logger.PEER.log("Received Info")
         Logger.PEER.log("Received info:", data.participants, "Blocks: ${data.blocks.size}", "Current Votes: ${data.currentVotes.size}", showOnAndroid = false)

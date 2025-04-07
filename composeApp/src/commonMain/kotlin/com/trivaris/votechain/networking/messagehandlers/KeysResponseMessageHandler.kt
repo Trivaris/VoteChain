@@ -9,7 +9,6 @@ import com.trivaris.votechain.voting.VotingManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import java.net.InetAddress
 
 class KeysResponseMessageHandler: MessageHandler {
@@ -27,7 +26,7 @@ class KeysResponseMessageHandler: MessageHandler {
         }
 
         val message = envelope.message
-        val decryptionMap = Json.decodeFromString<Map<String, String>>(message.data)
+        val decryptionMap = Config.json.decodeFromString<Map<String, String>>(message.data)
 
         Logger.PEER.log("Received Public Keys from Server")
         VotingManager.setDecryptionMap(decryptionMap)

@@ -11,9 +11,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trivaris.votechain.Config
 import com.trivaris.votechain.Logger
-import kotlinx.serialization.json.Json
-
-val json = Json { prettyPrint = true }
 
 @Composable
 fun SettingsScreen(onSave: () -> Unit = {}) {
@@ -40,7 +37,7 @@ fun SettingsScreen(onSave: () -> Unit = {}) {
         Button(
             onClick = {
                 Config.data = configState.value
-                Logger.INFO.log(json.encodeToString(configState.value))
+                Logger.INFO.log(Config.json.encodeToString(configState.value))
                 Config.save()
                 onSave()
             },
