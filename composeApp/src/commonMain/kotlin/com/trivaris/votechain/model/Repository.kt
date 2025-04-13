@@ -5,7 +5,6 @@ import app.cash.sqldelight.Transacter
 interface Repository<T: Object> {
     val database: Transacter
 
-    fun init(driverFactory: DriverFactory)
     fun insert(obj: T)
     fun getAll(): List<T>
     fun clear()

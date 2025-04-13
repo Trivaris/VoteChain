@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.trivaris.votechain.voting.Candidate
+import com.trivaris.votechain.vote.Candidate
 
 @Composable
 fun CandidateProgressBar(candidate: Candidate, amountAll: Int, amountThis: Int) {

@@ -2,11 +2,11 @@ package com.trivaris.votechain.view
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.trivaris.votechain.Config
+import com.trivaris.votechain.common.Config
 import com.trivaris.votechain.view.votingview.KeyFileLoader
-import com.trivaris.votechain.model.block.BlockRepository
 import com.trivaris.votechain.model.DriverFactory
-import com.trivaris.votechain.networking.NetworkManager
+import com.trivaris.votechain.model.block.ChainInteraction
+import com.trivaris.votechain.network.NetworkManager
 import com.trivaris.votechain.resources.Res
 import com.trivaris.votechain.resources.icon_round
 import org.jetbrains.compose.resources.painterResource
@@ -19,7 +19,7 @@ fun main() {
     Config.setSource(getConfigJson())
 
     val driverFactory = DriverFactory()
-    BlockRepository.init(driverFactory)
+    ChainInteraction.init(driverFactory)
 
     NetworkManager.join(InetAddress.getLocalHost().hostAddress)
 

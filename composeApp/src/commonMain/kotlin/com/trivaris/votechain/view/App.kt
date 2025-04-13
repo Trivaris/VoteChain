@@ -26,8 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.trivaris.votechain.Config
-import com.trivaris.votechain.Logger
+import com.trivaris.votechain.common.Config
+import com.trivaris.votechain.common.Logger
 import com.trivaris.votechain.view.blockview.BlockGraph
 import com.trivaris.votechain.view.blockview.BlockMineButton
 import com.trivaris.votechain.view.counterview.CandidateVotes
@@ -37,9 +37,8 @@ import com.trivaris.votechain.view.votingview.JoinRequestButton
 import com.trivaris.votechain.view.votingview.KeysRequestButton
 import com.trivaris.votechain.view.votingview.LeaveRequestButton
 import com.trivaris.votechain.view.votingview.Voting
-import com.trivaris.votechain.model.block.BlockRepository
-import com.trivaris.votechain.networking.NetworkManager
-import com.trivaris.votechain.voting.VotingManager
+import com.trivaris.votechain.model.block.ChainInteraction
+import com.trivaris.votechain.network.NetworkManager
 
 @Composable
 fun App(
@@ -71,7 +70,7 @@ private fun TopBar(onSettingsClick: () -> Unit, onGraphClick: () -> Unit) {
             IconButton(onClick = {
                 Logger.DEBUG.log("Resetting Settings")
                 NetworkManager.clearParticipants()
-                BlockRepository.clear()
+                ChainInteraction.clear()
             }) {
                 Icon(Icons.Default.Refresh, contentDescription = "Reset", tint = Color.White)
             }

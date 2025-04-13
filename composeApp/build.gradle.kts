@@ -61,6 +61,8 @@ kotlin {
                 implementation(libs.zxing.javase)
 
                 implementation(libs.sqldelight.runtime)
+                //implementation(libs.libp2p.jvm)
+                implementation(libs.eventkt)
             }
         }
 
@@ -74,6 +76,7 @@ kotlin {
                 implementation(libs.jai.imageio.core)
 
                 implementation(libs.sqldelight.driver.android)
+
             }
         }
 

@@ -7,12 +7,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
 import com.journeyapps.barcodescanner.ScanContract
-import com.trivaris.votechain.Config
+import com.trivaris.votechain.common.Config
 import com.trivaris.votechain.blockchain.BlockDatabaseManager
-import com.trivaris.votechain.networking.SerializableKeyPair
+import com.trivaris.votechain.network.SerializableKeyPair
 import com.trivaris.votechain.blockchain.database.DriverFactory
-import com.trivaris.votechain.networking.NetworkManager
-import com.trivaris.votechain.voting.VotingManager
+import com.trivaris.votechain.network.NetworkManager
+import com.trivaris.votechain.vote.VotingManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

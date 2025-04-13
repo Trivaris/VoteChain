@@ -1,11 +1,11 @@
 package com.trivaris.votechain.model.block
 
 import com.trivaris.votechain.Block
-import com.trivaris.votechain.Config
-import com.trivaris.votechain.Logger
-import com.trivaris.votechain.applySha256
+import com.trivaris.votechain.common.Config
+import com.trivaris.votechain.common.Logger
+import com.trivaris.votechain.common.applySha256
 import com.trivaris.votechain.model.Object
-import com.trivaris.votechain.voting.Vote
+import com.trivaris.votechain.vote.Vote
 import kotlinx.serialization.Serializable
 import java.util.Date
 

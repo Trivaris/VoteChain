@@ -3,7 +3,7 @@ package com.trivaris.votechain.view.counterview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.trivaris.votechain.voting.VotingManager
+import com.trivaris.votechain.vote.VotingManager
 
 @Composable
 fun CandidateVotes() {

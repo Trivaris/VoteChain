@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.trivaris.votechain.Config
-import com.trivaris.votechain.Logger
+import com.trivaris.votechain.common.Config
+import com.trivaris.votechain.common.Logger
 
 @Composable
 fun SettingsScreen(onSave: () -> Unit = {}) {

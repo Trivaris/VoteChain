@@ -8,14 +8,14 @@ androidx-activity-compose  = "1.9.3"
 androidx-lifecycle         = "2.8.4"
 compose-multiplatform      = "1.7.0"
 jai-imageio-core           = "1.4.0"
-kotlin                     = "2.1.0"
+kotlin                     = "2.1.10"
 kotlinx-coroutines         = "1.10.1"
 kotlinx-serialization      = "1.8.0"
 zxing-core                 = "3.4.1"
 zxing-android-embedded     = "4.3.0"
 sqldelight                 = "2.0.2"
-
-
+libp2p                     = "1.2.2"
+eventkt                    = "0.2.0-SNAPSHOT"
 
 [libraries]
 # AndroidX
@@ -42,7 +42,8 @@ sqldelight-driver-android         = { group = "app.cash.sqldelight", name = "and
 sqldelight-driver-desktop         = { group = "app.cash.sqldelight", name = "sqlite-driver",  version.ref = "sqldelight" }
 sqldelight-runtime                = { group = "app.cash.sqldelight", name = "runtime",        version.ref = "sqldelight" }
 
-
+# libp2p-jvm                        = { group = "com.github.libp2p",        name = "jvm-libp2p",   version.ref = "libp2p" }
+eventkt                           = { group = "br.com.devsrsouza.eventkt", name = "eventkt-core", version.ref = "eventkt" }
 
 [plugins]
 # Android

@@ -1,10 +1,10 @@
 package com.trivaris.votechain.view.votingview
 
 import androidx.compose.runtime.Composable
-import com.trivaris.votechain.Config
-import com.trivaris.votechain.networking.SerializableKeyPair
-import com.trivaris.votechain.decodeQRCode
-import com.trivaris.votechain.voting.VotingManager
+import com.trivaris.votechain.common.Config
+import com.trivaris.votechain.network.SerializableKeyPair
+import com.trivaris.votechain.common.decodeQRCode
+import com.trivaris.votechain.vote.VotingManager
 
 @Composable
 fun KeyFileLoader() {

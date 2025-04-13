@@ -5,6 +5,6 @@
     "serverPort": 9235,
     "receivingPort": 9235,
     "printHashCalc": true,
-    "debugMode": false,
+    "debugMode": true,
     "isServer": true
 }

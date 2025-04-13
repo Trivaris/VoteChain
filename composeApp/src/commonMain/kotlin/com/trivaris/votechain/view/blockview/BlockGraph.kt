@@ -14,10 +14,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trivaris.votechain.model.block.BlockObject
-import com.trivaris.votechain.Config
-import com.trivaris.votechain.Logger
+import com.trivaris.votechain.common.Config
+import com.trivaris.votechain.common.Logger
 import com.trivaris.votechain.view.Logo
-import com.trivaris.votechain.model.block.BlockRepository
+import com.trivaris.votechain.model.block.ChainInteraction
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -25,21 +25,19 @@ import java.util.Locale
 val sdf = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
 
 @Composable
-fun BlockGraph() {
+fun BlockGraph(blocks: List<BlockObject>) {
     Logger.DEBUG.log("Starting BlockGraph")
-    val blocks = BlockRepository.getAll()
 
     Spacer(modifier = Modifier.height(48.dp))
 
     if (blocks.isEmpty()) {
         Logo()
         Text("No blocks found", color = Color.White)
-    }
-    else
+    } else
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(blocks) { block ->
             Block(block)
-            Spacer(modifier = Modifier.height(16.dp)) // Constant distance between blocks
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

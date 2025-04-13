@@ -18,10 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.trivaris.votechain.Config
-import com.trivaris.votechain.Logger
-import com.trivaris.votechain.debugKeypairs
-import com.trivaris.votechain.voting.VotingManager
+import com.trivaris.votechain.common.Config
+import com.trivaris.votechain.common.Logger
+import com.trivaris.votechain.host.debugKeypairs
+import com.trivaris.votechain.vote.VotingManager
 
 @Composable
 fun DebugKeypairSelector() {

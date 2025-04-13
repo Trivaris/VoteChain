@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.trivaris.votechain.Logger
-import com.trivaris.votechain.networking.NetworkManager
-import com.trivaris.votechain.voting.VotingManager
+import com.trivaris.votechain.common.Logger
+import com.trivaris.votechain.network.NetworkManager
+import com.trivaris.votechain.vote.VotingManager
 
 @Composable
 fun Voting(onVoteNull: () -> Unit) {
