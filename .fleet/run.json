@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "Start Emulator",
+            "type": "command",
+            "program": "emulator",
+            "args": [
+                "-avd",
+                "android_15_emulator",
+                "-gpu",
+                "host"
+            ]
+        }
+    ]
+}
