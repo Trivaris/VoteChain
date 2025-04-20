@@ -3,4 +3,5 @@
     <string name="blockchain_tab">BlockChain</string>
     <string name="settings_tab">Settings</string>
     <string name="counting_tab">Counting</string>
+    <string name="select_candidate">Select Candidate</string>
 </resources>

@@ -16,7 +16,7 @@ actual fun AppTheme(
 
   MaterialTheme(
     colorScheme = colorScheme,
-    typography = Typography,
+    typography = VoteChainTypography,
     content = content
   )
 }

@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -6,11 +7,12 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    //alias(libs.plugins.ethers)
+    alias(libs.plugins.realm.plugin)
 }
 
 kotlin {
     androidTarget {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
@@ -39,6 +41,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
@@ -56,12 +59,6 @@ kotlin {
             implementation(libs.mongodb.realm)
             implementation(libs.kotlin.coroutines)
             implementation(libs.stately.common)
-
-            /*implementation(project.dependencies.platform(libs.ethers.bom))
-            implementation(libs.ethers.abi)
-            implementation(libs.ethers.core)
-            implementation(libs.ethers.providers)
-            implementation(libs.ethers.signers)*/
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -112,8 +109,3 @@ compose.desktop {
         }
     }
 }
-
-/*ethersAbigen {
-    directorySource("src/commonMain/abi")
-    outputDir = "build/generated/source/ethers/commonMain/kotlin"
-}*/
