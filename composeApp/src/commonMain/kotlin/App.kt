@@ -5,6 +5,7 @@ import androidx.compose.runtime.*
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.trivaris.votechain.data.MongoDB
+import com.trivaris.votechain.networking.Ethereum
 import com.trivaris.votechain.theme.AppTheme
 import com.trivaris.votechain.views.common.BottomNavBar
 import com.trivaris.votechain.views.voting.VotingTab
@@ -44,8 +45,15 @@ val mongoModule = module {
     factory { VotingViewModel(get()) }
 }
 
+val ethereumModule = module {
+    single { Ethereum() }
+}
+
 fun initKoin() {
     startKoin {
-        modules(mongoModule)
+        modules(
+            mongoModule,
+            ethereumModule
+        )
     }
 }
