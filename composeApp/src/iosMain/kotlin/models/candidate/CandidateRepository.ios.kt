@@ -5,7 +5,7 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSDocumentDirectory
 
 @OptIn(ExperimentalForeignApi::class)
-actual fun getRealmDirectory(): String {
+actual fun getCandidatesDirectory(): String {
     val fileManager = NSFileManager.defaultManager
     val documentDirectory = fileManager.URLForDirectory(
         NSDocumentDirectory,

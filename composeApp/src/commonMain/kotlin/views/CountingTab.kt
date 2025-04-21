@@ -1,4 +1,4 @@
-package com.trivaris.votechain.views.counting
+package com.trivaris.votechain.views
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -14,6 +14,7 @@ import votechain.composeapp.generated.resources.Res
 import votechain.composeapp.generated.resources.counting_tab
 
 object CountingTab : Tab {
+    private fun readResolve(): Any = CountingTab
 
     @Composable
     override fun Content() {

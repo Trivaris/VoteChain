@@ -1,4 +1,4 @@
-package com.trivaris.votechain.views.settings
+package com.trivaris.votechain.views
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -9,16 +9,18 @@ import com.trivaris.votechain.views.common.BottomNavBar
 import com.trivaris.votechain.views.common.TopLogoBar
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import votechain.composeapp.generated.resources.*
 import votechain.composeapp.generated.resources.Res
+import votechain.composeapp.generated.resources.blockchain_tab
+import votechain.composeapp.generated.resources.blockchain_tab_icon
 
-object SettingsTab : Tab {
+object BlockChainTab : Tab {
+    private fun readResolve(): Any = BlockChainTab
 
     @Composable
     override fun Content() {
         Scaffold(
             topBar = {
-                TopLogoBar(stringResource(Res.string.settings_tab))
+                TopLogoBar(stringResource(Res.string.blockchain_tab))
             },
             bottomBar = {
                 BottomNavBar()
@@ -30,12 +32,12 @@ object SettingsTab : Tab {
 
     override val options: TabOptions
         @Composable get() {
-            val title = stringResource(Res.string.settings_tab)
-            val icon = painterResource(Res.drawable.settings_tab_icon)
+            val title = stringResource(Res.string.blockchain_tab)
+            val icon = painterResource(Res.drawable.blockchain_tab_icon)
 
             return remember {
                 TabOptions(
-                    index = 3u,
+                    index = 2u,
                     title = title,
                     icon = icon
                 )

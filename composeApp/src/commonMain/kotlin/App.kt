@@ -1,29 +1,22 @@
 package com.trivaris.votechain
 
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import com.trivaris.votechain.models.candidate.CandidateRepository
 import com.trivaris.votechain.theme.AppTheme
 import com.trivaris.votechain.views.common.BottomNavBar
-import com.trivaris.votechain.views.voting.VotingTab
-import com.trivaris.votechain.views.voting.VotingViewModel
+import com.trivaris.votechain.views.VotingTab
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.core.context.startKoin
-import org.koin.dsl.module
+import androidx.compose.runtime.Composable
+import com.trivaris.votechain.models.datastore.DataStoreClient
+import com.trivaris.votechain.models.datastore.PreferenceKeys
 
 @Composable
 @Preview
-fun App(
-    darkTheme: Boolean,
-    dynamicColor: Boolean
-) {
-    initKoin()
-
+fun App() {
     AppTheme(
-        darkTheme = darkTheme,
-        dynamicColor = dynamicColor
+        DataStoreClient.repo.readPref(PreferenceKeys.DARK_MODE),
+        DataStoreClient.repo.readPref(PreferenceKeys.DYNAMIC_COLOR)
     ) {
         TabNavigator(VotingTab) {
             Scaffold(
@@ -35,18 +28,5 @@ fun App(
                 }
             )
         }
-    }
-}
-
-val mongoModule = module {
-    single { CandidateRepository() }
-    factory { VotingViewModel(get()) }
-}
-
-fun initKoin() {
-    startKoin {
-        modules(
-            mongoModule
-        )
     }
 }

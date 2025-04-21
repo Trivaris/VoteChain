@@ -1,16 +1,18 @@
-package com.trivaris.votechain.views.voting
+package com.trivaris.votechain.views
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.trivaris.votechain.models.RequestState
 import com.trivaris.votechain.models.candidate.CandidateObject
+import com.trivaris.votechain.models.datastore.DataStoreClient
+import com.trivaris.votechain.models.datastore.PreferenceKeys
+import com.trivaris.votechain.viewmodels.VotingViewModel
 import com.trivaris.votechain.views.common.BottomNavBar
 import com.trivaris.votechain.views.common.DropDownMenu
 import com.trivaris.votechain.views.common.TopLogoBar
@@ -25,6 +27,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import votechain.composeapp.generated.resources.select_candidate
 
 object VotingTab : Tab {
+    private fun readResolve(): Any = VotingTab
 
     @Preview
     @Composable
@@ -52,6 +55,7 @@ object VotingTab : Tab {
                 ) { candidate ->
                     viewModel.setSelectedCandidate(candidate)
                 }
+                Text(DataStoreClient.repo.readPref(PreferenceKeys.USERNAME).collectAsState("").value)
             }
         }
 

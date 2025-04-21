@@ -1,4 +1,4 @@
-package com.trivaris.votechain.views.voting
+package com.trivaris.votechain.viewmodels
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State

@@ -15,6 +15,7 @@ koin = "4.0.4"
 realm = "3.0.0"
 coroutines = "1.10.2"
 stately = "2.1.0"
+datastore = "1.1.4"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -27,10 +28,16 @@ navigator-screen-model = { module = "cafe.adriel.voyager:voyager-screenmodel", v
 navigator-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 navigator-tabnavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 navigator-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-androidx = { module = "io.insert-koin:koin-androidx-compose" }
 mongodb-realm = { module = "io.realm.kotlin:library-base", version.ref = "realm" }
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately" }
+datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -2,11 +2,12 @@ package com.trivaris.votechain.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 actual fun AppTheme(
-    darkTheme: Boolean,
-    dynamicColor: Boolean,
+    darkTheme: Flow<Boolean>,
+    materialTheme: Flow<Boolean>,
     content: @Composable () -> Unit
 ) {
   val colorScheme = when {

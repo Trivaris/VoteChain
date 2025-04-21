@@ -7,10 +7,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
-import com.trivaris.votechain.views.blockchain.BlockChainTab
-import com.trivaris.votechain.views.counting.CountingTab
-import com.trivaris.votechain.views.settings.SettingsTab
-import com.trivaris.votechain.views.voting.VotingTab
+import com.trivaris.votechain.views.BlockChainTab
+import com.trivaris.votechain.views.CountingTab
+import com.trivaris.votechain.views.SettingsTab
+import com.trivaris.votechain.views.VotingTab
 
 @Composable
 fun BottomNavBar() {
