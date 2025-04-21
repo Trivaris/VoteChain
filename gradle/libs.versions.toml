@@ -14,8 +14,13 @@ voyager = "1.0.1"
 koin = "4.0.4"
 realm = "3.0.0"
 coroutines = "1.10.2"
+#noinspection GradleDependency
+serialization = "1.7.3"
 stately = "2.1.0"
 datastore = "1.1.4"
+
+hyperledger-chaincode = "2.5.5"
+hyperledger-gateway = "2.2.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -35,9 +40,13 @@ koin-android = { module = "io.insert-koin:koin-android" }
 koin-androidx = { module = "io.insert-koin:koin-androidx-compose" }
 mongodb-realm = { module = "io.realm.kotlin:library-base", version.ref = "realm" }
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 stately-common = { module = "co.touchlab:stately-common", version.ref = "stately" }
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+
+hyperledger-chaincode = { module = "org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim", version.ref = "hyperledger-chaincode" }
+hyperledger-gateway = { module = "org.hyperledger.fabric:fabric-gateway-java", version.ref = "hyperledger-gateway" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -45,4 +54,5 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 realm-plugin = { id = "io.realm.kotlin", version.ref = "realm" }

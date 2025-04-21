@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.realm.plugin)
 }
 
@@ -62,9 +63,13 @@ kotlin {
 
             implementation(libs.mongodb.realm)
             implementation(libs.kotlin.coroutines)
+            implementation(libs.kotlin.serialization)
             implementation(libs.stately.common)
             implementation(libs.datastore)
             implementation(libs.datastore.preferences)
+
+            implementation(libs.hyperledger.chaincode)
+            implementation(libs.hyperledger.gateway)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

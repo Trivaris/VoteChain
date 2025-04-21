@@ -4,7 +4,7 @@ import com.trivaris.votechain.models.candidate.CandidateRepository
 import com.trivaris.votechain.viewmodels.VotingViewModel
 import org.koin.dsl.module
 
-val mongoModule = module {
+val candidateModule = module {
     single { CandidateRepository() }
     factory { VotingViewModel(get()) }
 }
