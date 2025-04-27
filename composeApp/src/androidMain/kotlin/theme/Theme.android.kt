@@ -1,5 +1,6 @@
 package com.trivaris.votechain.theme
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
@@ -13,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.trivaris.votechain.models.datastore.PreferenceKeys
 import kotlinx.coroutines.flow.Flow
 
+@SuppressLint("NewApi")
 @Composable
 actual fun AppTheme(
     darkTheme: Flow<Boolean>,
@@ -26,15 +28,16 @@ actual fun AppTheme(
         initial = PreferenceKeys.DYNAMIC_COLOR.defaultValue
     )
 
+    val isMaterialThemeAllowed = remember(isMaterialTheme) {
+        isMaterialTheme && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    }
+
     val context = LocalContext.current
 
     val colorScheme = remember(isDarkTheme, isMaterialTheme) {
         when {
-            isMaterialTheme && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-                if (isDarkTheme)
-                    dynamicDarkColorScheme(context)
-                else dynamicLightColorScheme(context)
-            }
+            isMaterialThemeAllowed && isDarkTheme -> dynamicDarkColorScheme(context)
+            isMaterialThemeAllowed && !isDarkTheme -> dynamicLightColorScheme(context)
             isDarkTheme -> darkScheme
             else -> lightScheme
         }

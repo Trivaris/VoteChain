@@ -19,7 +19,7 @@ class SettingsViewModel(
     private var _dynamicColor = mutableStateOf(PreferenceKeys.DYNAMIC_COLOR.defaultValue)
     val dynamicColor: State<Boolean> = _dynamicColor
 
-    private var _username = mutableStateOf(PreferenceKeys.USERNAME.defaultValue)
+    private var _username = mutableStateOf(PreferenceKeys.VOTER_ID.defaultValue)
     val username: State<String> = _username
 
     init {
@@ -32,7 +32,7 @@ class SettingsViewModel(
                 .collectLatest { _dynamicColor.value = it }
         }
         CoroutineScope(Dispatchers.Main).launch {
-            dataStore.readPref(PreferenceKeys.USERNAME)
+            dataStore.readPref(PreferenceKeys.VOTER_ID)
                 .collectLatest { _username.value = it }
         }
     }
@@ -51,7 +51,7 @@ class SettingsViewModel(
 
     fun setUsername(usernameNew: String) {
         CoroutineScope(Dispatchers.Main).launch {
-            dataStore.editPref(PreferenceKeys.USERNAME, usernameNew)
+            dataStore.editPref(PreferenceKeys.VOTER_ID, usernameNew)
         }
     }
 }

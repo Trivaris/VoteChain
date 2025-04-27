@@ -16,6 +16,7 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.trivaris.votechain.models.RequestState
 import com.trivaris.votechain.models.vote.VoteResult
 import com.trivaris.votechain.viewmodels.CountingViewModel
+import com.trivaris.votechain.viewmodels.VotingViewModel
 import com.trivaris.votechain.views.common.BottomNavBar
 import com.trivaris.votechain.views.common.TopLogoBar
 import com.trivaris.votechain.views.common.state.ErrorScreen
@@ -48,8 +49,8 @@ object CountingTab : Tab {
                     .wrapContentSize(Alignment.TopCenter),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                VoteResults(viewModel.results.value)
-                Button(onClick = { viewModel.refresh() }) {
+                VoteResults(viewModel.results.value, viewModel)
+                Button(onClick = {  }) {
                     Text(stringResource(Res.string.refresh_results))
                 }
             }
@@ -58,7 +59,8 @@ object CountingTab : Tab {
 
     @Composable
     private fun VoteResults(
-        resultState: RequestState<List<VoteResult>>
+        resultState: RequestState<List<VoteResult>>,
+        viewModel: CountingViewModel
     ) {
         resultState.DisplayResult(
             onLoading = { LoadingScreen() },
@@ -66,7 +68,7 @@ object CountingTab : Tab {
             onSuccess = { results ->
                 LazyColumn {
                     items(results.size) { index ->
-                        Text("${results[index].candidateId}: ${results[index].candidateId}")
+                        Text("${viewModel.getCandidateNameById(results[index].candidateId)}: ${results[index].count}")
                     }
                 }
             }

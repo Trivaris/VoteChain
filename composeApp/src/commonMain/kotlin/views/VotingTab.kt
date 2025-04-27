@@ -1,6 +1,9 @@
 package com.trivaris.votechain.views
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,13 +43,25 @@ object VotingTab : Tab {
             },
             bottomBar = {
                 BottomNavBar()
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = {
+                        viewModel.castVote()
+                    }
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Default.Send,
+                        contentDescription = "Send"
+                    )
+                }
             }
         ) { padding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .wrapContentSize(Alignment.TopCenter),  // Centering horizontally and top alignment
+                    .wrapContentSize(Alignment.TopCenter),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CandidateDropDown(
@@ -55,7 +70,7 @@ object VotingTab : Tab {
                 ) { candidate ->
                     viewModel.setSelectedCandidate(candidate)
                 }
-                Text(DataStoreClient.repo.readPref(PreferenceKeys.USERNAME).collectAsState("").value)
+                Text(DataStoreClient.repo.readPref(PreferenceKeys.VOTER_ID).collectAsState("").value)
             }
         }
 

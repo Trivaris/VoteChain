@@ -18,8 +18,20 @@ object PreferenceKeys {
         key     = booleanPreferencesKey("dynamic_color_enabled"),
         defaultValue = false
     )
-    val USERNAME = Preference(
-        key     = stringPreferencesKey("username"),
-        defaultValue = "Trivaris"
+    val VOTER_ID = Preference(
+        key     = stringPreferencesKey("voter_id"),
+        defaultValue = ""
+    )
+    val ENCRYPTION_KEY = Preference(
+        key     = stringPreferencesKey("encryption_key"),
+        defaultValue = ""
+    )
+    val DECRYPTION_KEY = Preference(
+        key     = stringPreferencesKey("decryption_key"),
+        defaultValue = ""
+    )
+    val SIGNING_KEY = Preference(
+        key     = stringPreferencesKey("signing_key"),
+        defaultValue = ""
     )
 }

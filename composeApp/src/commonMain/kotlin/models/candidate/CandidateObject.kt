@@ -2,6 +2,7 @@ package com.trivaris.votechain.models.candidate
 
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
+import kotlinx.serialization.Serializable
 import org.mongodb.kbson.ObjectId
 
 class CandidateObject : RealmObject {
@@ -16,5 +17,9 @@ class CandidateObject : RealmObject {
 
     fun getFullName(): String {
         return "${firstname.replaceFirstChar { it.uppercase() }} ${lastname.replaceFirstChar { it.uppercase() }}"
+    }
+
+    fun getId(): String {
+        return _id.toString()
     }
 }

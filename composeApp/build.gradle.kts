@@ -120,3 +120,6 @@ compose.desktop {
         }
     }
 }
+
+System.setProperty("otel.traces.exporter", "none")
+System.setProperty("otel.metrics.exporter", "none")

@@ -39,4 +39,15 @@ class CandidateRepository {
             }
     }
 
+    fun getCandidateById(id: String): Flow<RequestState<CandidateObject?>> {
+        return realmInstance.query<CandidateObject>("_id = $0", id)
+            .first()
+            .asFlow()
+            .map { result ->
+                RequestState.Success(
+                    data = result.obj
+                )
+            }
+    }
+
 }
