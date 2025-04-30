@@ -4,6 +4,7 @@
 **/build/
 xcuserdata
 !src/**/build/
+composeApp/src/docker/
 local.properties
 .idea
 .DS_Store

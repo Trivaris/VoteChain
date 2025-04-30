@@ -68,8 +68,13 @@ kotlin {
             implementation(libs.datastore)
             implementation(libs.datastore.preferences)
 
-            implementation(libs.hyperledger.chaincode)
-            implementation(libs.hyperledger.gateway)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.server.core)
+            implementation(libs.ktor.server.netty)
+            implementation(libs.yass.core)
+            implementation(libs.yass.coroutines)
+            implementation(libs.yass.ktor)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
