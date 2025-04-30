@@ -1,4 +1,5 @@
 [versions]
+#noinspection AndroidGradlePluginVersion
 agp = "8.9.1"
 android-compileSdk = "35"
 android-minSdk = "24"
@@ -17,10 +18,10 @@ coroutines = "1.10.2"
 #noinspection GradleDependency
 serialization = "1.7.3"
 stately = "2.1.0"
-datastore = "1.1.4"
+datastore = "1.1.5"
 
-hyperledger-chaincode = "2.5.5"
-hyperledger-gateway = "2.2.0"
+yass = "22.0.2"
+ktor = "3.1.2"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -45,8 +46,13 @@ stately-common = { module = "co.touchlab:stately-common", version.ref = "stately
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
-hyperledger-chaincode = { module = "org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim", version.ref = "hyperledger-chaincode" }
-hyperledger-gateway = { module = "org.hyperledger.fabric:fabric-gateway-java", version.ref = "hyperledger-gateway" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+yass-core = { module = "ch.softappeal.yass2:yass2-core-jvm", version.ref = "yass" }
+yass-coroutines = { module = "ch.softappeal.yass2:yass2-coroutines-jvm", version.ref = "yass" }
+yass-ktor = { module = "ch.softappeal.yass2:yass2-ktor-jvm", version.ref = "yass" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
