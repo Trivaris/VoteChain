@@ -1,6 +1,5 @@
 package com.trivaris.votechain.models.vote
 
-import com.trivaris.votechain.models.candidate.CandidateObject
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
