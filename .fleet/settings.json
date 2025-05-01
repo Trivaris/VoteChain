@@ -1,5 +1,0 @@
-{
-    "editor.formatOnSave": true,
-    "prettier.mode": "Auto",
-    "run.destination.stop.already.running": "Always"
-}

@@ -12,7 +12,7 @@ import org.koin.core.component.inject
 
 const val DATA_STORE_FILE_NAME = "prefs.preferences_pb"
 
-expect fun getDataStoreDirectory(): String
+expect val dataStoreDirectory: String
 
 object DataStoreClient : KoinComponent {
     val repo: DataStoreRepository by inject()
@@ -30,7 +30,7 @@ class DataStoreRepository {
 
     private fun configureDataStore() {
         dataStore = PreferenceDataStoreFactory.createWithPath(
-            produceFile = { getDataStoreDirectory().toPath() }
+            produceFile = { dataStoreDirectory.toPath() }
         )
     }
 
