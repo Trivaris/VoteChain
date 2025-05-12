@@ -5,10 +5,10 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.realm.plugin)
 }
@@ -54,53 +54,91 @@ kotlin {
 //    }
 
     sourceSets {
-        val desktopMain by getting
 
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.koin.android)
-            implementation(libs.koin.androidx)
+        val commonMain by getting {
+            dependencies {
+                // Compose MPP
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(compose.material3)
+                implementation(compose.ui)
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
+
+                // Core MPP libs
+                implementation(libs.kotlin.serialization)
+                implementation(libs.stately.common)
+
+                // Networking & RPC (common)
+                implementation(libs.ktor.client.core)
+                implementation(libs.yass.core)
+                implementation(libs.yass.coroutines)
+                implementation(libs.yass.ktor)
+
+                // Navigator MPP
+                implementation(libs.navigator)
+                implementation(libs.navigator.screen.model)
+                implementation(libs.navigator.transitions)
+                implementation(libs.navigator.tabnavigator)
+            }
         }
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
 
-            implementation(libs.navigator)
-            implementation(libs.navigator.screen.model)
-            implementation(libs.navigator.transitions)
-            implementation(libs.navigator.tabnavigator)
-            implementation(libs.navigator.koin)
-            implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
+        val androidMain by getting {
+            dependencies {
+                // Android UI & lifecycle
+                implementation(compose.preview)
+                implementation(libs.androidx.activity.compose)
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.runtime.compose)
 
-            implementation(libs.mongodb.realm)
-            implementation(libs.kotlin.coroutines)
-            implementation(libs.kotlin.serialization)
-            implementation(libs.stately.common)
-            implementation(libs.datastore)
-            implementation(libs.datastore.preferences)
+                // Koin on Android
+                implementation(libs.koin.android)
+                implementation(libs.koin.androidx)
+                implementation(libs.koin.core)
+                implementation(libs.koin.compose)
 
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.cio)
-            implementation(libs.ktor.server.core)
-            implementation(libs.ktor.server.netty)
-            implementation(libs.yass.core)
-            implementation(libs.yass.coroutines)
-            implementation(libs.yass.ktor)
+                // Persistence
+                implementation(libs.mongodb.realm)
+                implementation(libs.datastore)
+                implementation(libs.datastore.preferences)
+
+                // Ktor engines
+                implementation(libs.ktor.client.cio)
+
+                // Server (optional)
+                implementation(libs.ktor.server.core)
+                implementation(libs.ktor.server.netty)
+
+                // Voyager-Koin integration
+                implementation(libs.navigator.koin)
+            }
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
+
+        val desktopMain by getting {
+            dependencies {
+                // Desktop UI
+                implementation(compose.desktop.currentOs)
+                implementation(libs.kotlinx.coroutines.swing)
+
+                // JVM engines & DI
+                implementation(libs.ktor.client.cio)
+                implementation(libs.navigator.koin)
+                implementation(libs.koin.compose)
+                implementation(libs.mongodb.realm)
+            }
         }
+
+//        val wasmJsMain by getting {
+//            dependencies {
+//                // JS-only Navigator & RPC
+//                implementation(libs.navigator.js)
+//                implementation(libs.yass.ktor.js)
+//
+//                // JS client engine
+//                implementation(libs.ktor.client.js)
+//            }
+//        }
     }
 }
 
